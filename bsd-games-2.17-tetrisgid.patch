@@ -1,0 +1,225 @@
+diff -Naur --exclude '*.swp' bsd-games-2.17/tetris/scores.c bsd-games-2.17.new/tetris/scores.c
+--- bsd-games-2.17/tetris/scores.c	2006-04-22 20:46:56.000000000 -0700
++++ bsd-games-2.17.new/tetris/scores.c	2006-04-22 22:02:45.000000000 -0700
+@@ -41,6 +41,7 @@
+  *
+  * Major whacks since then.
+  */
++#define _GNU_SOURCE /* this must be done before the first include of unistd.h */
+ #include <err.h>
+ #include <errno.h>
+ #include <fcntl.h>
+@@ -77,85 +78,88 @@
+ 
+ static int checkscores(struct highscore *, int);
+ static int cmpscores(const void *, const void *);
+-static void getscores(FILE **);
++static void getscores(FILE *);
+ static void printem(int, int, struct highscore *, int, const char *);
+ static char *thisuser(void);
+ 
+ /*
+- * Read the score file.  Can be called from savescore (before showscores)
+- * or showscores (if savescore will not be called).  If the given pointer
+- * is not NULL, sets *fpp to an open file pointer that corresponds to a
+- * read/write score file that is locked with LOCK_EX.  Otherwise, the
+- * file is locked with LOCK_SH for the read and closed before return.
+- *
+- * Note, we assume closing the stdio file releases the lock.
++ * Read the score file from a previously opened file pointer.  If the file
++ * pointer is null, then read the scoreboard from a known location.  Otherwise,
++ * the FILE pointer is rewound, read, and left open to be read again later.
+  */
+ static void
+-getscores(fpp)
+-	FILE **fpp;
++getscores(fp)
++    FILE *fp;
+ {
+-	int sd, mint, lck;
+-	mode_t mask;
+-	const char *mstr, *human;
+-	FILE *sf;
+-
+-	if (fpp != NULL) {
+-		mint = O_RDWR | O_CREAT;
+-		mstr = "r+";
+-		human = "read/write";
+-		lck = LOCK_EX;
+-	} else {
+-		mint = O_RDONLY;
+-		mstr = "r";
+-		human = "reading";
+-		lck = LOCK_SH;
+-	}
+-	setegid(egid);
+-	mask = umask(S_IWOTH);
+-	sd = open(_PATH_SCOREFILE, mint, 0666);
+-	(void)umask(mask);
+-	if (sd < 0) {
+-		if (fpp == NULL) {
+-			nscores = 0;
+-			setegid(gid);
+-			return;
+-		}
+-		err(1, "cannot open %s for %s", _PATH_SCOREFILE, human);
+-	}
+-	if ((sf = fdopen(sd, mstr)) == NULL) {
+-		err(1, "cannot fdopen %s for %s", _PATH_SCOREFILE, human);
+-	}
+-	setegid(gid);
++	int sd = -1;
++        FILE *sf = fp;
+ 
+-	/*
+-	 * Grab a lock.
+-	 */
+-	if (flock(sd, lck))
+-		warn("warning: score file %s cannot be locked",
+-		    _PATH_SCOREFILE);
++        if (sf == NULL) {
++            sd = open(_PATH_SCOREFILE, O_RDONLY, 0664);
++            if (sd < 0) {
++                    nscores = 0;
++                    return;
++                    err(1, "cannot open %s for reading", _PATH_SCOREFILE);
++            }
++            if ((sf = fdopen(sd, "r")) == NULL) {
++                    err(1, "cannot fdopen %s for reading", _PATH_SCOREFILE);
++            }
++        } else {
++            rewind(sf);
++        }
+ 
+ 	nscores = fread(scores, sizeof(scores[0]), MAXHISCORES, sf);
+ 	if (ferror(sf)) {
+ 		err(1, "error reading %s", _PATH_SCOREFILE);
+ 	}
+ 
+-	if (fpp)
+-		*fpp = sf;
+-	else
+-		(void)fclose(sf);
++	else {
++                if (fp == NULL) {
++                        (void)fclose(sf);
++                }
++        }
++}
++
++/*
++ * Open the high score file and then drop setgid privileges.  If running
++ * setgid, then calling this function a second time will result in a
++ * permission denied error since gid privileges will have been lost.
++ */
++void
++open_score(fd, fp)
++    int *fd;
++    FILE **fp;
++{
++    *fd = open(_PATH_SCOREFILE, O_RDWR | O_CREAT, 0664);
++    if (*fd < 0) {
++        err(1, "Could not open scoreboard file %s", _PATH_SCOREFILE);
++    } else {
++        *fp = fdopen(*fd, "r+");
++        if (*fp == NULL) {
++            err(1, "Could not open scoreboard file %s", _PATH_SCOREFILE);
++        }
++    }
++    if (setresgid(-1, getgid(), getgid()) == -1) {
++        perror("Could not drop setgid privileges.  Aborting.");
++        exit(1);
++    }
+ }
+ 
+ void
+-savescore(level)
++savescore(level, sf)
+ 	int level;
++        FILE *sf;
+ {
+ 	struct highscore *sp;
+ 	int i;
+ 	int change;
+-	FILE *sf;
+ 	const char *me;
+ 
+-	getscores(&sf);
++        if (sf == NULL) {
++            return;
++        }
++
++	getscores(sf);
+ 	gotscores = 1;
+ 	(void)time(&now);
+ 
+@@ -215,14 +219,17 @@
+ static char *
+ thisuser()
+ {
+-	const char *p;
++	const char *p = (char *)NULL;
+ 	struct passwd *pw;
+ 	size_t l;
+ 	static char u[sizeof(scores[0].hs_name)];
+ 
+ 	if (u[0])
+ 		return (u);
++        /* Don't use getlogin() as it will return the wrong result
++         * for someone who has su'd to a different user.
+ 	p = getlogin();
++         */
+ 	if (p == NULL || *p == '\0') {
+ 		pw = getpwuid(getuid());
+ 		if (pw != NULL)
+@@ -359,7 +366,7 @@
+ 	int levelfound[NLEVELS];
+ 
+ 	if (!gotscores)
+-		getscores((FILE **)NULL);
++		getscores(NULL);
+ 	(void)printf("\n\t\t\t    Tetris High Scores\n");
+ 
+ 	/*
+diff -Naur --exclude '*.swp' bsd-games-2.17/tetris/scores.h bsd-games-2.17.new/tetris/scores.h
+--- bsd-games-2.17/tetris/scores.h	2006-04-22 20:46:56.000000000 -0700
++++ bsd-games-2.17.new/tetris/scores.h	2006-04-22 16:30:46.000000000 -0700
+@@ -48,5 +48,6 @@
+ #define MAXSCORES	9	/* maximum high score entries per person */
+ #define	EXPIRATION	(5L * 365 * 24 * 60 * 60)
+ 
+-void	savescore(int);
++void	savescore(int, FILE *);
++void    open_score(int *, FILE **);
+ void	showscores(int);
+diff -Naur --exclude '*.swp' bsd-games-2.17/tetris/tetris.c bsd-games-2.17.new/tetris/tetris.c
+--- bsd-games-2.17/tetris/tetris.c	2006-04-22 20:46:56.000000000 -0700
++++ bsd-games-2.17.new/tetris/tetris.c	2006-04-22 21:02:27.000000000 -0700
+@@ -135,10 +135,15 @@
+ 	char key_write[6][10];
+ 	int ch, i, j;
+ 	int fd;
++        int sd = 0;
++        FILE *sf = (FILE *)NULL;
+ 
+-	gid = getgid();
+-	egid = getegid();
+-	setegid(gid);
++        /*
++         * This function has the side effect of dropping setgid privileges.
++         * sd is not used, but is kept around in case we want to add code
++         * to lock shared access to the scoreboard later.
++         */
++        open_score(&sd, &sf);
+ 
+ 	fd = open("/dev/null", O_RDONLY);
+ 	if (fd < 3)
+@@ -307,7 +312,7 @@
+ 
+ 	(void)printf("Your score:  %d point%s  x  level %d  =  %d\n",
+ 	    score, score == 1 ? "" : "s", level, score * level);
+-	savescore(level);
++	savescore(level, sf);
+ 
+ 	printf("\nHit RETURN to see high scores, ^C to skip.\n");
+ 

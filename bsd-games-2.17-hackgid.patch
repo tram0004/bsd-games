@@ -1,0 +1,440 @@
+diff -Naur --exclude '*.swp' bsd-games-2.17/hack/hack.bones.c bsd-games-2.17.new/hack/hack.bones.c
+--- bsd-games-2.17/hack/hack.bones.c	2003-12-16 18:47:37.000000000 -0800
++++ bsd-games-2.17.new/hack/hack.bones.c	2006-04-27 14:17:06.000000000 -0700
+@@ -140,10 +140,14 @@
+ 						 * ghost */
+ 		}
+ 	}
+-	if ((fd = creat(bones, FMASK)) < 0)
++        setgid(hackgid);
++	if ((fd = creat(bones, FMASK)) < 0) {
++                setgid(getgid());
+ 		return;
++        }
+ 	savelev(fd, dlevel);
+ 	(void) close(fd);
++        setgid(getgid());
+ }
+ 
+ int
+@@ -168,9 +172,12 @@
+ 	if (!wizard)		/* duvel!frans: don't remove bones while
+ 				 * debugging */
+ #endif	/* WiZARD */
++                setgid(hackgid);
+ 		if (unlink(bones) < 0) {
++                        setgid(getgid());
+ 			pline("Cannot unlink %s .", bones);
+ 			return (0);
+ 		}
++                setgid(getgid());
+ 	return (ok);
+ }
+diff -Naur --exclude '*.swp' bsd-games-2.17/hack/hack.do.c bsd-games-2.17.new/hack/hack.do.c
+--- bsd-games-2.17/hack/hack.do.c	2004-01-27 12:52:07.000000000 -0800
++++ bsd-games-2.17.new/hack/hack.do.c	2006-04-27 14:32:43.000000000 -0700
+@@ -206,7 +206,9 @@
+ 		return;		/* this can happen */
+ 
+ 	glo(dlevel);
++        setgid(hackgid);
+ 	fd = creat(lock, FMASK);
++        setgid(getgid());
+ 	if (fd < 0) {
+ 		/*
+ 		 * This is not quite impossible: e.g., we may have
+@@ -231,8 +233,10 @@
+ 	u.ux = FAR;		/* hack */
+ 	(void) inshop();	/* probably was a trapdoor */
+ 
++        setgid(hackgid);
+ 	savelev(fd, dlevel);
+ 	(void) close(fd);
++        setgid(getgid());
+ 
+ 	dlevel = newlevel;
+ 	if (maxdlevel < dlevel)
+diff -Naur --exclude '*.swp' bsd-games-2.17/hack/hack.end.c bsd-games-2.17.new/hack/hack.end.c
+--- bsd-games-2.17/hack/hack.end.c	2003-12-16 18:47:37.000000000 -0800
++++ bsd-games-2.17.new/hack/hack.end.c	2006-04-27 15:48:03.000000000 -0700
+@@ -290,7 +290,11 @@
+ #ifdef WIZARD
+ 	if (!wizard)
+ #endif	/* WIZARD */
+-		topten();
++        {
++            setgid(hackgid);
++            topten();
++            setgid(getgid());
++        }
+ 	if (done_stopprint)
+ 		printf("\n\n");
+ 	exit(0);
+diff -Naur --exclude '*.swp' bsd-games-2.17/hack/hack.h bsd-games-2.17.new/hack/hack.h
+--- bsd-games-2.17/hack/hack.h	2004-01-27 12:52:07.000000000 -0800
++++ bsd-games-2.17.new/hack/hack.h	2006-04-27 11:48:15.000000000 -0700
+@@ -218,6 +218,7 @@
+ extern int bases[];
+ extern int doorindex;
+ extern int hackpid;
++extern gid_t hackgid;
+ extern int multi;
+ extern int nroom;
+ extern long moves;
+diff -Naur --exclude '*.swp' bsd-games-2.17/hack/hack.main.c bsd-games-2.17.new/hack/hack.main.c
+--- bsd-games-2.17/hack/hack.main.c	2004-01-27 12:52:07.000000000 -0800
++++ bsd-games-2.17.new/hack/hack.main.c	2006-04-27 20:16:23.000000000 -0700
+@@ -61,6 +61,7 @@
+  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  */
+ 
++#define _GNU_SOURCE /* this must be done before the first include of unistd.h */
+ #include <sys/cdefs.h>
+ #ifndef lint
+ __RCSID("$NetBSD: hack.main.c,v 1.9 2004/01/27 20:30:29 jsm Exp $");
+@@ -70,6 +71,9 @@
+ #include <stdlib.h>
+ #include <unistd.h>
+ #include <fcntl.h>
++#include <sys/types.h>
++#include <pwd.h>
++#include <limits.h>
+ #include "hack.h"
+ #include "extern.h"
+ 
+@@ -83,12 +87,13 @@
+ int             (*occupation)(void);
+ const char           *occtxt;		/* defined when occupation != NULL */
+ 
++gid_t           hackgid;        /* privileged gid for writing scoreboard */
+ int             hackpid;	/* current pid */
+ int             locknum;	/* max num of players */
+ #ifdef DEF_PAGER
+ const char     *catmore;	/* default pager */
+ #endif
+-char            SAVEF[PL_NSIZ + 11] = "save/";	/* save/99999player */
++char            SAVEF[PATH_MAX + PL_NSIZ + 11] = ".hack.save";
+ char           *hname;		/* name of the game (argv[0] of call) */
+ char            obuf[BUFSIZ];	/* BUFSIZ is defined in stdio.h */
+ 
+@@ -101,9 +106,10 @@
+ 	char           *argv[];
+ {
+ 	int             fd;
+-#ifdef CHDIR
+-	char           *dir;
+-#endif
++        char           *savedir = (char *)NULL;
++
++        hackgid = getegid();
++        setgid(getgid());
+ 
+ 	/* Check for dirty tricks with closed fds 0, 1, 2 */
+ 	fd = open("/dev/null", O_RDONLY);
+@@ -114,31 +120,47 @@
+ 	hname = argv[0];
+ 	hackpid = getpid();
+ 
+-#ifdef CHDIR			/* otherwise no chdir() */
+ 	/*
+-	 * See if we must change directory to the playground.
+-	 * (Perhaps hack runs suid and playground is inaccessible
+-	 *  for the player.)
++         * Find the directory containing the save files.
+ 	 * The environment variable HACKDIR is overridden by a
+ 	 *  -d command line option (must be the first option given)
+ 	 */
+ 
+-	dir = getenv("HACKDIR");
++	savedir = getenv("HACKDIR");
+ 	if (argc > 1 && !strncmp(argv[1], "-d", 2)) {
+ 		argc--;
+ 		argv++;
+-		dir = argv[0] + 2;
+-		if (*dir == '=' || *dir == ':')
+-			dir++;
+-		if (!*dir && argc > 1) {
++		savedir = argv[0] + 2;
++		if (*savedir == '=' || *savedir == ':')
++			savedir++;
++		if (!*savedir && argc > 1) {
+ 			argc--;
+ 			argv++;
+-			dir = argv[0];
++			savedir = argv[0];
+ 		}
+-		if (!*dir)
++		if (!*savedir)
+ 			error("Flag -d must be followed by a directory name.");
+ 	}
+-#endif
++
++        /*
++         * If the user didn't tell us where the save games are stored then
++         * look in the home directory.
++         */
++        if (savedir == (char *)NULL) {
++            if ((savedir = getenv("HOME")) == (char *)NULL) {
++                struct passwd *pwe;
++                pwe = getpwuid(getuid());
++                if (pwe == NULL || (savedir = pwe->pw_dir) == (char *)NULL) {
++                    savedir = ".";
++                }
++            }
++        }
++        /*
++         * One final check in case we missed something earlier.
++         */
++        if (savedir == NULL || strlen(savedir) > PATH_MAX-30) {
++            savedir = ".";
++        }
+ 
+ 	/*
+ 	 * Who am i? Algorithm: 1. Use name as specified in HACKOPTIONS
+@@ -155,12 +177,21 @@
+ 		char           *s;
+ 
+ 		initoptions();
+-		if (!*plname && (s = getenv("USER")))
++		if (!*plname && (s = getenv("USER"))) {
+ 			(void) strncpy(plname, s, sizeof(plname) - 1);
+-		if (!*plname && (s = getenv("LOGNAME")))
++                }
++		if (!*plname && (s = getenv("LOGNAME"))) {
+ 			(void) strncpy(plname, s, sizeof(plname) - 1);
+-		if (!*plname && (s = getlogin()))
++                }
++		if (!*plname && (s = getlogin())) {
+ 			(void) strncpy(plname, s, sizeof(plname) - 1);
++                }
++                /*
++                 * Ensure that plname is null-terminated.  strncpy
++                 * doesn't guarantee it if the source is longer than
++                 * the destination.
++                 */
++                plname[sizeof(plname) - 1] = (char)NULL;
+ 	}
+ 
+ 	/*
+@@ -169,11 +200,12 @@
+ 	 */
+ 	if (argc > 1 && !strncmp(argv[1], "-s", 2)) {
+ #ifdef CHDIR
+-		chdirx(dir, 0);
++		chdirx(_PATH_HACK, 0);
+ #endif
+ 		prscore(argc, argv);
+ 		exit(0);
+ 	}
++
+ 	/*
+ 	 * It seems he really wants to play.
+ 	 * Remember tty modes, to be restored on exit.
+@@ -191,13 +223,13 @@
+ 	 * Find the creation date of this game,
+ 	 * so as to avoid restoring outdated savefiles.
+ 	 */
+-	gethdate(hname);
++	gethdate(argv[0]);
+ 
+ 	/*
+ 	 * We cannot do chdir earlier, otherwise gethdate will fail.
+ 	 */
+ #ifdef CHDIR
+-	chdirx(dir, 1);
++	chdirx(_PATH_HACK, 1);
+ #endif
+ 
+ 	/*
+@@ -277,7 +309,9 @@
+ 		(void) signal(SIGINT, SIG_IGN);
+ 		if (!locknum)
+ 			(void) strcpy(lock, plname);
++                setgid(hackgid);
+ 		getlock();	/* sets lock if locknum != 0 */
++                setgid(getgid());
+ #ifdef WIZARD
+ 	} else {
+ 		char           *sfoo;
+@@ -308,10 +342,21 @@
+ 	}
+ #endif
+ 	setftty();
+-	(void) sprintf(SAVEF, "save/%d%s", getuid(), plname);
+-	regularize(SAVEF + 5);	/* avoid . or / in name */
+-	if ((fd = open(SAVEF, O_RDONLY)) >= 0 &&
+-	    (uptodate(fd) || unlink(SAVEF) == 666)) {
++
++	(void) snprintf(SAVEF, PATH_MAX, "%s/.hack.save-%d%s", savedir, getuid(), plname);
++        /* Disable this regularization.  It's only needed when using
++         * setgid and a a shared directory for save games.  In Fedora we've
++         * patched it to save games with normal user permissions (not setgid),
++         * so this isn't necessary anymore.
++         */
++	/*regularize(SAVEF + 5);*/	/* avoid . or / in name */
++        /*
++         * Removed check if the save game is up-to-date so we can avoid
++         * invalidating games during bugfix releases.  It would be
++         * _much_ better to store some sort of savefile version number
++         * in the savefile itself.
++         */
++	if ((fd = open(SAVEF, O_RDONLY)) >= 0) {
+ 		(void) signal(SIGINT, done1);
+ 		pline("Restoring old save file...");
+ 		(void) fflush(stdout);
+@@ -540,16 +585,6 @@
+ 	boolean         wr;
+ {
+ 
+-#ifdef SECURE
+-	if (dir			/* User specified directory? */
+-#ifdef HACKDIR
+-	    && strcmp(dir, HACKDIR)	/* and not the default? */
+-#endif
+-		) {
+-		(void) setuid(getuid());	/* Ron Wessels */
+-		(void) setregid(getgid(), getgid());
+-	}
+-#endif
+ 
+ #ifdef HACKDIR
+ 	if (dir == NULL)
+@@ -568,12 +603,34 @@
+ 
+ 		if (dir == NULL)
+ 			dir = ".";
+-		if ((fd = open(RECORD, O_RDWR)) < 0) {
+-			printf("Warning: cannot write %s/%s", dir, RECORD);
++
++                setgid(hackgid);
++		fd = open(RECORD, O_RDWR);
++                setgid(getgid());
++
++		if (fd < 0) {
++			printf("Warning: cannot write %s", RECORD);
+ 			getret();
+ 		} else
+ 			(void) close(fd);
+ 	}
++
++#ifdef SECURE
++	if (dir			/* User specified directory? */
++#ifdef HACKDIR
++	    && strcmp(dir, HACKDIR)	/* and not the default? */
++#endif
++		) {
++                if (setresuid(-1, getuid(), getuid()) == -1) {
++                    perror("Could not drop setuid privileges.  Aborting.");
++                    exit(1);
++                }
++                if (setresgid(-1, getgid(), getgid()) == -1) {
++                    perror("Could not drop setgid privileges.  Aborting.");
++                    exit(1);
++                }
++	}
++#endif
+ }
+ #endif
+ 
+diff -Naur --exclude '*.swp' bsd-games-2.17/hack/hack.save.c bsd-games-2.17.new/hack/hack.save.c
+--- bsd-games-2.17/hack/hack.save.c	2003-12-16 18:47:37.000000000 -0800
++++ bsd-games-2.17.new/hack/hack.save.c	2006-04-27 20:12:41.000000000 -0700
+@@ -105,8 +105,9 @@
+ 	(void) signal(SIGHUP, SIG_IGN);
+ 	(void) signal(SIGINT, SIG_IGN);
+ 	if ((fd = creat(SAVEF, FMASK)) < 0) {
+-		if (!hu)
+-			pline("Cannot open save file. (Continue or Quit)");
++		if (!hu) {
++			pline("Cannot open save file %s. (Continue or Quit)", SAVEF);
++                }
+ 		(void) unlink(SAVEF);	/* ab@unido */
+ 		return (0);
+ 	}
+@@ -198,10 +199,14 @@
+ 			break;
+ 		getlev(fd, 0, tmp);
+ 		glo(tmp);
+-		if ((nfd = creat(lock, FMASK)) < 0)
++                setgid(hackgid);
++		if ((nfd = creat(lock, FMASK)) < 0) {
++                        setgid(getgid());
+ 			panic("Cannot open temp file %s!\n", lock);
++                }
+ 		savelev(nfd, tmp);
+ 		(void) close(nfd);
++                setgid(getgid());
+ 	}
+ 	(void) lseek(fd, (off_t) 0, SEEK_SET);
+ 	getlev(fd, 0, 0);
+diff -Naur --exclude '*.swp' bsd-games-2.17/hack/hack.unix.c bsd-games-2.17.new/hack/hack.unix.c
+--- bsd-games-2.17/hack/hack.unix.c	2003-12-16 18:47:37.000000000 -0800
++++ bsd-games-2.17.new/hack/hack.unix.c	2006-04-27 19:50:20.000000000 -0700
+@@ -161,6 +161,9 @@
+ 
+ struct stat     buf, hbuf;
+ 
++/*
++ * Get the timestamp of the named executable.
++ */
+ void
+ gethdate(name)
+ 	char           *name;
+@@ -192,9 +195,15 @@
+ 	for (;;) {
+ 		if ((np = strchr(path, ':')) == NULL)
+ 			np = path + strlen(path);	/* point to end str */
+-		if (np - path <= 1)	/* %% */
++		if (np - path <= 1) {	/* %% */
+ 			(void) strcpy(filename, name);
+-		else {
++                } else if (strlen(path) >= MAXPATHLEN-strlen(name)-2) {
++                /*
++                 * Protect against long directories in PATH by skipping them.
++                 */
++                    path = np + 1;
++                    continue;
++                } else {
+ 			(void) strncpy(filename, path, np - path);
+ 			filename[np - path] = '/';
+ 			(void) strcpy(filename + (np - path) + 1, name);
+@@ -231,6 +240,9 @@
+ {
+ 	int             i;
+ 	time_t          date;
++        gid_t           initial_egid;
++
++        initial_egid = getegid();
+ 
+ 	if (fstat(fd, &buf))
+ 		return (0);	/* cannot get status */
+@@ -255,13 +267,17 @@
+ 			return (0);
+ 	}
+ 	(void) close(fd);
++        setgid(hackgid);
+ 	for (i = 1; i <= MAXLEVEL; i++) {	/* try to remove all */
+ 		glo(i);
+ 		(void) unlink(lock);
+ 	}
+ 	glo(0);
+-	if (unlink(lock))
++	if (unlink(lock)) {
++                setgid(initial_egid);
+ 		return (0);	/* cannot remove it */
++        }
++        setgid(initial_egid);
+ 	return (1);		/* success! */
+ }
+ 
+@@ -321,8 +337,9 @@
+ 	      : "There is a game in progress under your name.");
+ gotlock:
+ 	fd = creat(lock, FMASK);
+-	if (unlink(LLOCK) == -1)
++	if (unlink(LLOCK) == -1) {
+ 		error("Cannot unlink %s.", LLOCK);
++        }
+ 	if (fd == -1) {
+ 		error("cannot creat lock file.");
+ 	} else {

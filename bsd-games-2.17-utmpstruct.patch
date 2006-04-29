@@ -1,0 +1,12 @@
+--- bsd-games-2.17.new/dm/utmpentry.c	2004-10-23 05:17:21.000000000 -0700
++++ bsd-games-2.17/dm/utmpentry.c	2006-04-04 10:51:17.000000000 -0700
+@@ -291,7 +291,8 @@
+ 	e->line[sizeof(e->line) - 1] = '\0';
+ 	(void)strncpy(e->host, up->ut_host, sizeof(up->ut_host));
+ 	e->name[sizeof(e->host) - 1] = '\0';
+-	e->tv = up->ut_tv;
++	e->tv.tv_sec = up->ut_tv.tv_sec;
++	e->tv.tv_usec = up->ut_tv.tv_usec;
+ 	adjust_size(e);
+ }
+ #endif

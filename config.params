@@ -1,0 +1,42 @@
+#!/bin/sh
+
+# This file contains the configuration settings for the bsd games
+# collection as packaged for Fedora Extras.  Only some settings are
+# listed here.  You'll have to comb through the configure script
+# to discover other things that can be modified.
+
+bsd_games_cfg_non_interactive=y
+bsd_games_cfg_install_prefix=@DESTDIR@
+bsd_games_cfg_no_build_dirs="countmail dm factor fortune"
+bsd_games_cfg_gamesdir=@bindir@
+bsd_games_cfg_sbindir=@sbindir@
+bsd_games_cfg_libexecdir=@libdir@
+bsd_games_cfg_man6dir=@mandir@/man6
+bsd_games_cfg_man8dir=@mandir@/man8
+bsd_games_cfg_man5dir=@mandir@/man5
+bsd_games_cfg_docdir=@docdir@
+bsd_games_cfg_sharedir=@datadir@/bsd-games/
+bsd_games_cfg_varlibdir=@var@/games/
+# Don't try to chown the files.  This will fail for non-root users and
+# will instead be handled in the rpm packaging.
+bsd_games_cfg_do_chown=n
+bsd_games_cfg_use_dot_so=.so
+bsd_games_cfg_gzip_manpages=y
+bsd_games_cfg_cc=gcc
+bsd_games_cfg_cxx=g++
+bsd_games_cfg_optimize_flags="@RPM_OPT_FLAGS@"
+bsd_games_cfg_ncurses_lib=-lncurses
+bsd_games_cfg_ncurses_includes=
+bsd_games_cfg_base_libs=
+bsd_games_cfg_yacc="bison -y"
+bsd_games_cfg_lex=flex
+bsd_games_cfg_lex_lib=-lfl
+bsd_games_cfg_pager=/usr/bin/less
+bsd_games_cfg_sail_dir="$bsd_games_cfg_varlibdir/sail"
+bsd_games_cfg_sail_dir_owner="root"
+bsd_games_cfg_sail_dir_group="root"
+bsd_games_cfg_sail_dir_perms="0750"
+bsd_games_cfg_hack_dir="/var/games/hack"
+bsd_games_cfg_hack_dir_owner="root"
+bsd_games_cfg_hack_dir_group="root"
+bsd_games_cfg_hack_dir_perms="0755"

@@ -1,0 +1,170 @@
+diff -Naur --exclude '*.swp' bsd-games-2.17/phantasia/gamesupport.c bsd-games-2.17.new/phantasia/gamesupport.c
+--- bsd-games-2.17/phantasia/gamesupport.c	2006-04-27 22:51:04.000000000 -0700
++++ bsd-games-2.17.new/phantasia/gamesupport.c	2006-04-27 21:01:11.000000000 -0700
+@@ -518,7 +518,10 @@
+ 	long    loc = 0L;	/* location in scoreboard file */
+ 	bool    found = FALSE;	/* set if we found an entry for this login */
+ 
+-	if ((fp = fopen(_PATH_SCORE, "r+")) != NULL) {
++        SET_PRIV_GID;
++	fp = fopen(_PATH_SCORE, "r+");
++        DROP_PRIV_GID;
++	if (fp != NULL) {
+ 		while (fread((char *) &sbuf, SZ_SCORESTRUCT, 1, fp) == 1)
+ 			if (strcmp(Player.p_login, sbuf.sb_login) == 0) {
+ 				found = TRUE;
+diff -Naur --exclude '*.swp' bsd-games-2.17/phantasia/interplayer.c bsd-games-2.17.new/phantasia/interplayer.c
+--- bsd-games-2.17/phantasia/interplayer.c	2006-04-27 22:51:04.000000000 -0700
++++ bsd-games-2.17.new/phantasia/interplayer.c	2006-04-27 21:01:45.000000000 -0700
+@@ -640,14 +640,18 @@
+ 		mvaddstr(4, 0, "You have become king!\n");
+ 
+ 		/* let everyone else know */
++                SET_PRIV_GID;
+ 		fp = fopen(_PATH_MESS, "w");
++                DROP_PRIV_GID;
+ 		fprintf(fp, "All hail the new king!");
+ 		fclose(fp);
+ 
+ 		/* clear all energy voids; retain location of holy grail */
+ 		fseek(Energyvoidfp, 0L, SEEK_SET);
+ 		fread((char *) &Enrgyvoid, SZ_VOIDSTRUCT, 1, Energyvoidfp);
++                SET_PRIV_GID;
+ 		fp = fopen(_PATH_VOID, "w");
++                DROP_PRIV_GID;
+ 		fwrite((char *) &Enrgyvoid, SZ_VOIDSTRUCT, 1, fp);
+ 		fclose(fp);
+ 	}
+@@ -716,7 +720,10 @@
+ 			break;
+ 
+ 		case '5':	/* collect accumulated taxes */
+-			if ((fp = fopen(_PATH_GOLD, "r+")) != NULL)
++                        SET_PRIV_GID;
++			fp = fopen(_PATH_GOLD, "r+");
++                        DROP_PRIV_GID;
++			if (fp != NULL)
+ 				/* collect taxes */
+ 			{
+ 				fread((char *) &temp1, sizeof(double), 1, fp);
+diff -Naur --exclude '*.swp' bsd-games-2.17/phantasia/macros.h bsd-games-2.17.new/phantasia/macros.h
+--- bsd-games-2.17/phantasia/macros.h	1997-07-17 09:42:20.000000000 -0700
++++ bsd-games-2.17.new/phantasia/macros.h	2006-04-27 22:49:40.000000000 -0700
+@@ -4,6 +4,10 @@
+  * macros.h - macro definitions for Phantasia
+  */
+ 
++/* setgid macros */
++#define SET_PRIV_GID setgid(phant_gid)
++#define DROP_PRIV_GID setgid(getgid())
++
+ #define ROLL(BASE,INTERVAL)	floor((BASE) + (INTERVAL) * drandom())
+ #define SGN(X)		((X) < 0 ? -1 : 1)
+ #define CIRCLE(X, Y)	floor(distance(X, 0.0, Y, 0.0) / 125.0 + 1)
+diff -Naur --exclude '*.swp' bsd-games-2.17/phantasia/main.c bsd-games-2.17.new/phantasia/main.c
+--- bsd-games-2.17/phantasia/main.c	2006-04-27 22:51:04.000000000 -0700
++++ bsd-games-2.17.new/phantasia/main.c	2006-04-27 21:00:46.000000000 -0700
+@@ -61,6 +61,9 @@
+ #undef bool
+ #include <curses.h>
+ 
++
++gid_t   phant_gid;
++
+ int	main(int, char **);
+ 
+ int
+@@ -74,6 +77,9 @@
+ 	time_t  seconds;		/* for time of day */
+ 	double  dtemp;			/* for temporary calculations */
+ 
++        phant_gid = getegid();
++        DROP_PRIV_GID;
++
+ 	initialstate();			/* init globals */
+ 
+ 	/* process arguments */
+@@ -290,22 +296,28 @@
+ 		Login = getpwuid(getuid())->pw_name;
+ 
+ 	/* open some files */
++        SET_PRIV_GID;
+ 	if ((Playersfp = fopen(_PATH_PEOPLE, "r+")) == NULL)
+ 		error(_PATH_PEOPLE);
++        DROP_PRIV_GID;
+ 	/* NOTREACHED */
+ 	if (fileno(Playersfp) < 3)
+ 		exit(1);
+ 
++        SET_PRIV_GID;
+ 	if ((Monstfp = fopen(_PATH_MONST, "r+")) == NULL)
+ 		error(_PATH_MONST);
++        DROP_PRIV_GID;
+ 	/* NOTREACHED */
+ 
+ 	if ((Messagefp = fopen(_PATH_MESS, "r")) == NULL)
+ 		error(_PATH_MESS);
+ 	/* NOTREACHED */
+ 
++        SET_PRIV_GID;
+ 	if ((Energyvoidfp = fopen(_PATH_VOID, "r+")) == NULL)
+ 		error(_PATH_VOID);
++        DROP_PRIV_GID;
+ 	if (fstat(fileno(Energyvoidfp), &sb) == -1)
+ 		error("stat");
+ 	if (sb.st_size == 0) {
+@@ -508,7 +520,9 @@
+ 		getstring(Databuf, SZ_DATABUF);
+ 		/* we open the file for writing to erase any data which is
+ 		 * already there */
++                SET_PRIV_GID;
+ 		fp = fopen(_PATH_MESS, "w");
++                DROP_PRIV_GID;
+ 		if (Databuf[0] != '\0')
+ 			fprintf(fp, "%s: %s", Player.p_name, Databuf);
+ 		fclose(fp);
+diff -Naur --exclude '*.swp' bsd-games-2.17/phantasia/misc.c bsd-games-2.17.new/phantasia/misc.c
+--- bsd-games-2.17/phantasia/misc.c	2006-04-27 22:51:04.000000000 -0700
++++ bsd-games-2.17.new/phantasia/misc.c	2006-04-27 21:02:34.000000000 -0700
+@@ -651,14 +651,18 @@
+ 	enterscore();		/* update score board */
+ 
+ 	/* put info in last dead file */
++        SET_PRIV_GID;
+ 	fp = fopen(_PATH_LASTDEAD, "w");
++        DROP_PRIV_GID;
+ 	fprintf(fp, "%s (%s, run by %s, level %.0f, killed by %s)",
+ 	    Player.p_name, descrtype(&Player, TRUE),
+ 	    Player.p_login, Player.p_level, how);
+ 	fclose(fp);
+ 
+ 	/* let other players know */
++        SET_PRIV_GID;
+ 	fp = fopen(_PATH_MESS, "w");
++        DROP_PRIV_GID;
+ 	fprintf(fp, "%s was killed by %s.", Player.p_name, how);
+ 	fclose(fp);
+ 
+@@ -1060,7 +1064,10 @@
+ 	}
+ 	Player.p_gold -= taxes;
+ 
+-	if ((fp = fopen(_PATH_GOLD, "r+")) != NULL)
++        SET_PRIV_GID;
++	fp = fopen(_PATH_GOLD, "r+");
++        DROP_PRIV_GID;
++	if (fp != NULL)
+ 		/* update taxes */
+ 	{
+ 		dtemp = 0.0;
+diff -Naur --exclude '*.swp' bsd-games-2.17/phantasia/phantglobs.h bsd-games-2.17.new/phantasia/phantglobs.h
+--- bsd-games-2.17/phantasia/phantglobs.h	2006-04-27 22:51:04.000000000 -0700
++++ bsd-games-2.17.new/phantasia/phantglobs.h	2006-04-27 20:25:34.000000000 -0700
+@@ -4,6 +4,7 @@
+  * phantglobs.h - global declarations for Phantasia
+  */
+ 
++extern  gid_t   phant_gid;      /* gid under which the game runs */
+ extern	double	Circle;		/* which circle player is in */
+ extern	double	Shield;		/* force field thrown up in monster battle */
+ 
