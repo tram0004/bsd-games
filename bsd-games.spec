@@ -1,7 +1,7 @@
 Summary: Collection of text-based games
 Name: bsd-games
 Version: 2.17
-Release: 8%{?dist}
+Release: 9%{?dist}
 License: BSD
 Group: Amusements/Games
 URL: ftp://metalab.unc.edu/pub/Linux/games/
@@ -19,9 +19,6 @@ Patch5: bsd-games-2.17-tetrisgid.patch
 Patch6: bsd-games-2.17-hackgid.patch
 Patch7: bsd-games-2.17-phantasiagid.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-# It looks like textutils became coreutils at some point.  I'm not sure
-# what is needed from it, so I'm commenting it out until I can find out.
-#Requires: textutils
 BuildRequires: ncurses-devel libtermcap-devel words
 Requires(Pre): /usr/sbin/groupadd
 
@@ -131,36 +128,33 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/worms
 %{_bindir}/wtf
 %{_bindir}/wump
-%dir %{_datadir}/bsd-games
-%{_datadir}/bsd-games/atc
-%{_datadir}/bsd-games/boggle
-%{_datadir}/bsd-games/cribbage.instr
-%{_datadir}/bsd-games/fish.instr
-%{_datadir}/bsd-games/monop-cards.pck
-%{_datadir}/bsd-games/quiz
-%{_datadir}/bsd-games/wump.info
+%{_datadir}/%{name}
 %{_datadir}/misc/acronyms
 %{_datadir}/misc/acronyms.comp
 %{_mandir}/man6/*
 %{_sbindir}/huntd
-%attr(664,root,games) %{_var}/games/atc_score
-%attr(664,root,games) %{_var}/games/battlestar.log
-%attr(664,root,games) %{_var}/games/cfscores
-%attr(664,root,games) %{_var}/games/criblog
-%{_datadir}/bsd-games/hack/
+%config %attr(664,root,games) %{_var}/games/atc_score
+%config %attr(664,root,games) %{_var}/games/battlestar.log
+%config %attr(664,root,games) %{_var}/games/cfscores
+%config %attr(664,root,games) %{_var}/games/criblog
 %dir %attr(0775,root,gamehack) %{_var}/games/hack
-%attr(664,root,gamehack) %{_var}/games/hack/*
+%config %attr(664,root,gamehack) %{_var}/games/hack/*
 %dir %attr(775,root,gamephant) %{_var}/games/phantasia
-%attr(664,root,gamephant) %{_var}/games/phantasia/*
+%config %attr(664,root,gamephant) %{_var}/games/phantasia/*
 %dir %attr(775,root,gamesail) %{_var}/games/sail
-%attr(644,root,games) %{_var}/games/robots_roll
-%attr(664,root,gamesail) %{_var}/games/saillog
-%attr(664,root,games) %{_var}/games/snake.log
-%attr(664,root,games) %{_var}/games/snakerawscores
-%attr(664,root,games) %{_var}/games/tetris-bsd.scores
+%config %attr(644,root,games) %{_var}/games/robots_roll
+%config %attr(664,root,gamesail) %{_var}/games/saillog
+%config %attr(664,root,games) %{_var}/games/snake.log
+%config %attr(664,root,games) %{_var}/games/snakerawscores
+%config %attr(664,root,games) %{_var}/games/tetris-bsd.scores
 %doc AUTHORS COPYING ChangeLog ChangeLog.0 THANKS YEAR2000 README.hunt trek/USD.doc/trek.me
 
 %changelog
+* Sat Apr 29 2006 Wart <wart@kobold.org> 2.17-9
+- Simplify files section
+- Remove unnecessary comment
+- Mark scoreboard files as %%config
+
 * Fri Apr 28 2006 Wart <wart@kobold.org> 2.17-8
 - Fix directory ownership of _datadir/bsd-games
 - Change license to BSD
