@@ -91,7 +91,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/backgammon
 %{_bindir}/teachgammon
 %attr(2755,root,games) %{_bindir}/battlestar
-%{_bindir}/banner
 %{_bindir}/boggle
 %{_bindir}/bcd
 %{_bindir}/caesar
@@ -150,6 +149,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS COPYING ChangeLog ChangeLog.0 THANKS YEAR2000 README.hunt trek/USD.doc/trek.me
 
 %changelog
+* Mon May 1 2006 Wart <wart@kobold.org> 2.17-10
+- Remove banner (conflict with a similar package in FE)
+
 * Sat Apr 29 2006 Wart <wart@kobold.org> 2.17-9
 - Simplify files section
 - Remove unnecessary comment
