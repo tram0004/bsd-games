@@ -1,7 +1,7 @@
 Summary: Collection of text-based games
 Name: bsd-games
 Version: 2.17
-Release: 10%{?dist}
+Release: 12%{?dist}
 License: BSD
 Group: Amusements/Games
 URL: ftp://metalab.unc.edu/pub/Linux/games/
@@ -18,14 +18,16 @@ Patch4: bsd-games-2.17-setresgid.patch
 Patch5: bsd-games-2.17-tetrisgid.patch
 Patch6: bsd-games-2.17-hackgid.patch
 Patch7: bsd-games-2.17-phantasiagid.patch
+# Add patch for monop->mpoly man page
+Patch8: bsd-games-2.17-monop-rename.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires: ncurses-devel libtermcap-devel words
+BuildRequires: ncurses-devel libtermcap-devel words flex
 Requires(Pre): /usr/sbin/groupadd
 
 %description
 Bsd-games includes adventure, arithmetic, atc, backgammon, battlestar,
 bcd, caesar, canfield, cfscores, cribbage, go-fish, gomoku,
-hunt, mille, monop, morse, number, phantasia, pig, pom, ppt, primes,
+hunt, mille, mpoly, morse, number, phantasia, pig, pom, ppt, primes,
 quiz, rain, random, robots, rot13, sail, snake, snscore, teachgammon,
 tetris-bsd, trek, wargames, worm, worms and wump.
 
@@ -40,6 +42,7 @@ install -p -m 755 %{SOURCE1} .
 %patch5 -p1 -b .tetrisgid
 %patch6 -p1 -b .hackgid
 %patch7 -p1 -b .phantasiagid
+%patch8 -p1 -b .monop.rename
 
 %build
 # We include a templatized configuration settings file to set
@@ -71,6 +74,7 @@ make RPM_BUILD_ROOT="$RPM_BUILD_ROOT" install
 # Change the binary name for monop to prevent a conflict with the mono-devel
 # package
 mv $RPM_BUILD_ROOT/%{_bindir}/monop $RPM_BUILD_ROOT/%{_bindir}/mpoly
+mv $RPM_BUILD_ROOT/%{_mandir}/man6/monop.6.gz $RPM_BUILD_ROOT/%{_mandir}/man6/mpoly.6.gz
 
 # Remove this doc file.  We're copying it to a different location for Fedora.
 rm -f $RPM_BUILD_ROOT/%{_docdir}/trek.me
@@ -149,6 +153,12 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS COPYING ChangeLog ChangeLog.0 THANKS YEAR2000 README.hunt trek/USD.doc/trek.me
 
 %changelog
+* Wed May 31 2006 Wart <wart@kobold.org> 2.17-12
+- Added missing BR: flex
+
+* Tue May 2 2006 Wart <wart@kobold.org> 2.17-11
+- Rename monop man page to match the renamed executable.
+
 * Mon May 1 2006 Wart <wart@kobold.org> 2.17-10
 - Remove banner (conflict with a similar package in FE)
 
