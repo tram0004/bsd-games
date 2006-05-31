@@ -1,0 +1,15 @@
+--- bsd-games-2.17.new/monop/monop.6.in	2003-12-16 18:47:37.000000000 -0800
++++ bsd-games-2.17.new/monop/monop.6.in.new	2006-05-03 07:33:20.000000000 -0700
+@@ -30,10 +30,10 @@
+ .\"	@(#)monop.6	6.5 (Berkeley) 3/25/93
+ .\"
+ .Dd March 25, 1993
+-.Dt MONOP 6
++.Dt MPOLY 6
+ .Os
+ .Sh NAME
+-.Nm monop
++.Nm mpoly
+ .Nd Monopoly game
+ .Sh SYNOPSIS
+ .Nm
