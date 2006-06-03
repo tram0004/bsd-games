@@ -1,7 +1,7 @@
 Summary: Collection of text-based games
 Name: bsd-games
 Version: 2.17
-Release: 12%{?dist}
+Release: 13%{?dist}
 License: BSD
 Group: Amusements/Games
 URL: ftp://metalab.unc.edu/pub/Linux/games/
@@ -21,7 +21,7 @@ Patch7: bsd-games-2.17-phantasiagid.patch
 # Add patch for monop->mpoly man page
 Patch8: bsd-games-2.17-monop-rename.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires: ncurses-devel libtermcap-devel words flex
+BuildRequires: ncurses-devel libtermcap-devel words flex bison
 Requires(Pre): /usr/sbin/groupadd
 
 %description
@@ -153,6 +153,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS COPYING ChangeLog ChangeLog.0 THANKS YEAR2000 README.hunt trek/USD.doc/trek.me
 
 %changelog
+* Wed May 31 2006 Wart <wart@kobold.org> 2.17-13
+- Added missing BR: bison
+
 * Wed May 31 2006 Wart <wart@kobold.org> 2.17-12
 - Added missing BR: flex
 
