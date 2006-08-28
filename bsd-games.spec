@@ -1,7 +1,7 @@
 Summary: Collection of text-based games
 Name: bsd-games
 Version: 2.17
-Release: 13%{?dist}
+Release: 14%{?dist}
 License: BSD
 Group: Amusements/Games
 URL: ftp://metalab.unc.edu/pub/Linux/games/
@@ -153,6 +153,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS COPYING ChangeLog ChangeLog.0 THANKS YEAR2000 README.hunt trek/USD.doc/trek.me
 
 %changelog
+* Mon Aug 28 2006 Wart <wart@kobold.org> 2.17-14
+- Rebuild for Fedora Extras
+
 * Wed May 31 2006 Wart <wart@kobold.org> 2.17-13
 - Added missing BR: bison
 
