@@ -1,0 +1,15 @@
+--- banner/banner.6.orig	2006-10-14 21:24:31.000000000 -0700
++++ banner/banner.6	2006-10-14 21:25:12.000000000 -0700
+@@ -30,10 +30,10 @@
+ .\"	@(#)banner.6	8.2 (Berkeley) 4/29/95
+ .\"
+ .Dd April 29, 1995
+-.Dt BANNER 6
++.Dt VERT-BANNER 6
+ .Os
+ .Sh NAME
+-.Nm banner
++.Nm vert-banner
+ .Nd print large banner on printer
+ .Sh SYNOPSIS
+ .Nm
