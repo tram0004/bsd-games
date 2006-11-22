@@ -7,7 +7,7 @@
 
 bsd_games_cfg_non_interactive=y
 bsd_games_cfg_install_prefix=@DESTDIR@
-bsd_games_cfg_no_build_dirs="countmail dm factor fortune"
+bsd_games_cfg_no_build_dirs="countmail dm factor fortune wargames"
 bsd_games_cfg_gamesdir=@bindir@
 bsd_games_cfg_sbindir=@sbindir@
 bsd_games_cfg_libexecdir=@libdir@

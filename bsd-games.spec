@@ -1,7 +1,7 @@
 Summary: Collection of text-based games
 Name: bsd-games
 Version: 2.17
-Release: 15%{?dist}
+Release: 16%{?dist}
 License: BSD
 Group: Amusements/Games
 URL: ftp://metalab.unc.edu/pub/Linux/games/
@@ -30,7 +30,7 @@ Bsd-games includes adventure, arithmetic, atc, backgammon, battlestar,
 bcd, caesar, canfield, cfscores, cribbage, go-fish, gomoku,
 hunt, mille, mpoly, morse, number, phantasia, pig, pom, ppt, primes,
 quiz, rain, random, robots, rot13, sail, snake, snscore, teachgammon,
-tetris-bsd, trek, wargames, worm, worms and wump.
+tetris-bsd, trek, worm, worms and wump.
 
 %prep
 %setup -q
@@ -134,7 +134,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(2755,root,games) %{_bindir}/tetris-bsd
 %{_bindir}/trek
 %{_bindir}/vert-banner
-%{_bindir}/wargames
 %{_bindir}/worm
 %{_bindir}/worms
 %{_bindir}/wtf
@@ -161,6 +160,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS COPYING ChangeLog ChangeLog.0 THANKS YEAR2000 README.hunt trek/USD.doc/trek.me
 
 %changelog
+* Sat Nov 18 2006 Wart <wart@kobold.org> 2.17-16
+- Drop the useless game 'wargames'
+
 * Sat Oct 14 2006 Wart <wart@kobold.org> 2.17-15
 - Reintroduce the 'banner' program as 'vert-banner' (BZ #209018)
 
