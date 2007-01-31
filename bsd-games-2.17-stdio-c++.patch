@@ -1,0 +1,14 @@
+--- include/stdio.h.orig	2007-01-30 15:53:42.000000000 -0800
++++ include/stdio.h	2007-01-30 15:54:17.000000000 -0800
+@@ -35,5 +35,11 @@
+ #include_next <stdio.h>
+ 
+ #ifndef HAVE_fgetln
++#ifdef __cplusplus
++extern "C" {
++#endif
+ extern char *fgetln(FILE *stream, size_t *len);
++#ifdef __cplusplus
++}
++#endif
+ #endif
