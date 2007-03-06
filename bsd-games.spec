@@ -1,7 +1,7 @@
 Summary: Collection of text-based games
 Name: bsd-games
 Version: 2.17
-Release: 17%{?dist}
+Release: 18%{?dist}
 License: BSD
 Group: Amusements/Games
 URL: ftp://metalab.unc.edu/pub/Linux/games/
@@ -22,8 +22,9 @@ Patch7: bsd-games-2.17-phantasiagid.patch
 Patch8: bsd-games-2.17-monop-rename.patch
 Patch9: bsd-games-2.17-banner-rename.patch
 Patch10: bsd-games-2.17-stdio-c++.patch
+Patch11: bsd-games-2.17-nolibtermcap.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires: ncurses-devel libtermcap-devel words flex bison
+BuildRequires: ncurses-devel words flex bison
 Requires(Pre): /usr/sbin/groupadd
 
 %description
@@ -47,6 +48,7 @@ install -p -m 755 %{SOURCE1} .
 %patch8 -p1 -b .monop.rename
 %patch9 -p0 -b .banner.rename
 %patch10 -p0 -b .cplusplus
+%patch11 -p0 -b .nolibtermcap
 
 %build
 # We include a templatized configuration settings file to set
@@ -162,6 +164,10 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS COPYING ChangeLog ChangeLog.0 THANKS YEAR2000 README.hunt trek/USD.doc/trek.me
 
 %changelog
+* Tue Mar 6 2007 Wart <wart@kobold.org> 2.17-18
+- Remove BR: libtermcap-devel
+- Change includes of <termcap.h> to <ncurses/termcap.h>
+
 * Tue Jan 30 2007 Wart <wart@kobold.org> 2.17-17
 - Patch to add extern "C" block to prevent c++ compiler error.
 

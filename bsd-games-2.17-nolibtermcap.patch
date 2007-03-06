@@ -1,0 +1,55 @@
+--- tetris/screen.c.orig	2007-03-06 12:17:34.000000000 -0800
++++ tetris/screen.c	2007-03-06 12:17:44.000000000 -0800
+@@ -46,7 +46,7 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+-#include <termcap.h>
++#include <ncurses/termcap.h>
+ #include <termios.h>
+ #include <unistd.h>
+ 
+--- tetris/scores.c.orig	2007-03-06 12:15:08.000000000 -0800
++++ tetris/scores.c	2007-03-06 12:15:18.000000000 -0800
+@@ -51,7 +51,7 @@
+ #include <sys/file.h>
+ #include <sys/stat.h>
+ #include <time.h>
+-#include <termcap.h>
++#include <ncurses/termcap.h>
+ #include <unistd.h>
+ 
+ #include "pathnames.h"
+--- backgammon/common_source/back.h.orig	2007-03-06 12:26:39.000000000 -0800
++++ backgammon/common_source/back.h	2007-03-06 12:26:49.000000000 -0800
+@@ -40,7 +40,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <termios.h>
+-#include <termcap.h>
++#include <ncurses/termcap.h>
+ #include <unistd.h>
+ 
+ #define rnum(r)	(random()%r)
+--- hack/hack.tty.c.orig	2007-03-06 14:12:00.000000000 -0800
++++ hack/hack.tty.c	2007-03-06 14:12:11.000000000 -0800
+@@ -106,7 +106,7 @@
+  */
+ 
+ #include <termios.h>
+-#include <termcap.h>
++#include <ncurses/termcap.h>
+ #include "hack.h"
+ #include "extern.h"
+ 
+--- hack/hack.termcap.c.orig	2007-03-06 14:14:48.000000000 -0800
++++ hack/hack.termcap.c	2007-03-06 14:14:58.000000000 -0800
+@@ -69,7 +69,7 @@
+ 
+ #include <string.h>
+ #include <termios.h>
+-#include <termcap.h>
++#include <ncurses/termcap.h>
+ #include <stdlib.h>
+ #include <unistd.h>
+ #include "hack.h"
