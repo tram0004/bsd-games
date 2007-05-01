@@ -1,7 +1,7 @@
 Summary: Collection of text-based games
 Name: bsd-games
 Version: 2.17
-Release: 19%{?dist}
+Release: 20%{?dist}
 License: BSD
 Group: Amusements/Games
 URL: ftp://metalab.unc.edu/pub/Linux/games/
@@ -171,6 +171,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS COPYING ChangeLog ChangeLog.0 THANKS YEAR2000 README.hunt trek/USD.doc/trek.me
 
 %changelog
+* Mon Apr 30 2007 Wart <wart@kobold.org> 2.17-20
+- Fix one more place where tetris must be renamed to bsd-fbg
+
 * Mon Apr 30 2007 Wart <wart@kobold.org> 2.17-19
 - Rename tetris to avoid legal quandries
 
