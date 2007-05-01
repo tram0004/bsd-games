@@ -92,6 +92,7 @@ mv $RPM_BUILD_ROOT/%{_mandir}/man6/banner.6.gz $RPM_BUILD_ROOT/%{_mandir}/man6/v
 # Change the binary name for tetris to prevent a conflict with the mono-devel
 # package
 mv $RPM_BUILD_ROOT/%{_bindir}/tetris-bsd $RPM_BUILD_ROOT/%{_bindir}/bsd-fbg
+mv $RPM_BUILD_ROOT/%{_mandir}/man6/tetris-bsd.6.gz $RPM_BUILD_ROOT/%{_mandir}/man6/bsd-fbg.6.gz
 
 # Remove this doc file.  We're copying it to a different location for Fedora.
 rm -f $RPM_BUILD_ROOT/%{_docdir}/trek.me
