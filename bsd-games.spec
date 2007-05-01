@@ -1,7 +1,7 @@
 Summary: Collection of text-based games
 Name: bsd-games
 Version: 2.17
-Release: 18%{?dist}
+Release: 19%{?dist}
 License: BSD
 Group: Amusements/Games
 URL: ftp://metalab.unc.edu/pub/Linux/games/
@@ -23,6 +23,7 @@ Patch8: bsd-games-2.17-monop-rename.patch
 Patch9: bsd-games-2.17-banner-rename.patch
 Patch10: bsd-games-2.17-stdio-c++.patch
 Patch11: bsd-games-2.17-nolibtermcap.patch
+Patch12: bsd-games-2.17-tetris-rename.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: ncurses-devel words flex bison
 Requires(Pre): /usr/sbin/groupadd
@@ -32,7 +33,7 @@ Bsd-games includes adventure, arithmetic, atc, backgammon, battlestar,
 bcd, caesar, canfield, cfscores, cribbage, go-fish, gomoku,
 hunt, mille, mpoly, morse, number, phantasia, pig, pom, ppt, primes,
 quiz, rain, random, robots, rot13, sail, snake, snscore, teachgammon,
-tetris-bsd, trek, worm, worms and wump.
+bsd-fbg, trek, worm, worms and wump.
 
 %prep
 %setup -q
@@ -49,6 +50,7 @@ install -p -m 755 %{SOURCE1} .
 %patch9 -p0 -b .banner.rename
 %patch10 -p0 -b .cplusplus
 %patch11 -p0 -b .nolibtermcap
+%patch12 -p0 -b .tetris.rename
 
 %build
 # We include a templatized configuration settings file to set
@@ -86,6 +88,10 @@ mv $RPM_BUILD_ROOT/%{_mandir}/man6/monop.6.gz $RPM_BUILD_ROOT/%{_mandir}/man6/mp
 # package with the same name
 mv $RPM_BUILD_ROOT/%{_bindir}/banner $RPM_BUILD_ROOT/%{_bindir}/vert-banner
 mv $RPM_BUILD_ROOT/%{_mandir}/man6/banner.6.gz $RPM_BUILD_ROOT/%{_mandir}/man6/vert-banner.6.gz
+
+# Change the binary name for tetris to prevent a conflict with the mono-devel
+# package
+mv $RPM_BUILD_ROOT/%{_bindir}/tetris-bsd $RPM_BUILD_ROOT/%{_bindir}/bsd-fbg
 
 # Remove this doc file.  We're copying it to a different location for Fedora.
 rm -f $RPM_BUILD_ROOT/%{_docdir}/trek.me
@@ -135,7 +141,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(2755,root,gamesail) %{_bindir}/sail
 %attr(2755,root,games) %{_bindir}/snake
 %{_bindir}/snscore
-%attr(2755,root,games) %{_bindir}/tetris-bsd
+%attr(2755,root,games) %{_bindir}/bsd-fbg
 %{_bindir}/trek
 %{_bindir}/vert-banner
 %{_bindir}/worm
@@ -160,10 +166,13 @@ rm -rf $RPM_BUILD_ROOT
 %config %attr(664,root,gamesail) %{_var}/games/saillog
 %config %attr(664,root,games) %{_var}/games/snake.log
 %config %attr(664,root,games) %{_var}/games/snakerawscores
-%config %attr(664,root,games) %{_var}/games/tetris-bsd.scores
+%config %attr(664,root,games) %{_var}/games/bsd-fbg.scores
 %doc AUTHORS COPYING ChangeLog ChangeLog.0 THANKS YEAR2000 README.hunt trek/USD.doc/trek.me
 
 %changelog
+* Mon Apr 30 2007 Wart <wart@kobold.org> 2.17-19
+- Rename tetris to avoid legal quandries
+
 * Tue Mar 6 2007 Wart <wart@kobold.org> 2.17-18
 - Remove BR: libtermcap-devel
 - Change includes of <termcap.h> to <ncurses/termcap.h>

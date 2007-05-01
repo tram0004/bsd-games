@@ -17,6 +17,7 @@ bsd_games_cfg_man5dir=@mandir@/man5
 bsd_games_cfg_docdir=@docdir@
 bsd_games_cfg_sharedir=@datadir@/bsd-games/
 bsd_games_cfg_varlibdir=@var@/games/
+bsd_games_cfg_tetris_scorefile=@var@/games/bsd-fbg.scores
 # Don't try to chown the files.  This will fail for non-root users and
 # will instead be handled in the rpm packaging.
 bsd_games_cfg_do_chown=n

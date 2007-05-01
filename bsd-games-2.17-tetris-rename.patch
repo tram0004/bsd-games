@@ -1,0 +1,56 @@
+--- tetris/tetris.6.in.orig	2007-04-30 22:07:33.000000000 -0700
++++ tetris/tetris.6.in	2007-04-30 22:12:40.000000000 -0700
+@@ -33,11 +33,11 @@
+ .\"	@(#)tetris.6	8.1 (Berkeley) 5/31/93
+ .\"
+ .Dd May 31, 1993
+-.Dt TETRIS 6
++.Dt BSD-FBG 6
+ .Os
+ .Sh NAME
+-.Nm tetris
+-.Nd the game of tetris
++.Nm bsd-fbg
++.Nd a falling block game
+ .Sh SYNOPSIS
+ .Nm
+ .Op Fl ps
+@@ -46,7 +46,7 @@
+ .Sh DESCRIPTION
+ The
+ .Nm
+-command runs display-based game which must be played on a CRT terminal.
++command runs a display-based game which must be played on a CRT terminal.
+ The object is to fit the shapes together forming complete rows,
+ which then vanish.
+ When the shapes fill up to the top, the game ends.
+@@ -83,7 +83,7 @@
+ space or tab characters from the shell.
+ For example:
+ .sp
+-.Dl "tetris -l 2 -k 'jkl pq'"
++.Dl "bsd-fbg -l 2 -k 'jkl pq'"
+ .sp
+ will play the default games, i.e. level 2 and with the default
+ control keys.
+--- tetris/scores.c.orig	2007-04-30 22:15:16.000000000 -0700
++++ tetris/scores.c	2007-04-30 22:15:23.000000000 -0700
+@@ -367,7 +367,7 @@
+ 
+ 	if (!gotscores)
+ 		getscores(NULL);
+-	(void)printf("\n\t\t\t    Tetris High Scores\n");
++	(void)printf("\n\t\t\t    High Scores\n");
+ 
+ 	/*
+ 	 * If level == 0, the person has not played a game but just asked for
+--- tetris/tetris.c.orig	2007-04-30 22:16:20.000000000 -0700
++++ tetris/tetris.c	2007-04-30 22:16:37.000000000 -0700
+@@ -337,6 +337,6 @@
+ void
+ usage()
+ {
+-	(void)fprintf(stderr, "usage: tetris-bsd [-ps] [-k keys] [-l level]\n");
++	(void)fprintf(stderr, "usage: bsd-fbg [-ps] [-k keys] [-l level]\n");
+ 	exit(1);
+ }
