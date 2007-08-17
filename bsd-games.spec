@@ -1,8 +1,8 @@
 Summary: Collection of text-based games
 Name: bsd-games
 Version: 2.17
-Release: 20%{?dist}
-License: BSD
+Release: 21%{?dist}
+License: BSD and BSD with advertising
 Group: Amusements/Games
 URL: ftp://metalab.unc.edu/pub/Linux/games/
 Source0: ftp://metalab.unc.edu/pub/Linux/games/bsd-games-%{version}.tar.gz
@@ -154,23 +154,27 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/misc/acronyms.comp
 %{_mandir}/man6/*
 %{_sbindir}/huntd
-%config %attr(664,root,games) %{_var}/games/atc_score
-%config %attr(664,root,games) %{_var}/games/battlestar.log
-%config %attr(664,root,games) %{_var}/games/cfscores
-%config %attr(664,root,games) %{_var}/games/criblog
+%config(noreplace) %attr(664,root,games) %{_var}/games/atc_score
+%config(noreplace) %attr(664,root,games) %{_var}/games/battlestar.log
+%config(noreplace) %attr(664,root,games) %{_var}/games/cfscores
+%config(noreplace) %attr(664,root,games) %{_var}/games/criblog
 %dir %attr(0775,root,gamehack) %{_var}/games/hack
-%config %attr(664,root,gamehack) %{_var}/games/hack/*
+%config(noreplace) %attr(664,root,gamehack) %{_var}/games/hack/*
 %dir %attr(775,root,gamephant) %{_var}/games/phantasia
-%config %attr(664,root,gamephant) %{_var}/games/phantasia/*
+%config(noreplace) %attr(664,root,gamephant) %{_var}/games/phantasia/*
 %dir %attr(775,root,gamesail) %{_var}/games/sail
-%config %attr(644,root,games) %{_var}/games/robots_roll
-%config %attr(664,root,gamesail) %{_var}/games/saillog
-%config %attr(664,root,games) %{_var}/games/snake.log
-%config %attr(664,root,games) %{_var}/games/snakerawscores
-%config %attr(664,root,games) %{_var}/games/bsd-fbg.scores
+%config(noreplace) %attr(644,root,games) %{_var}/games/robots_roll
+%config(noreplace) %attr(664,root,gamesail) %{_var}/games/saillog
+%config(noreplace) %attr(664,root,games) %{_var}/games/snake.log
+%config(noreplace) %attr(664,root,games) %{_var}/games/snakerawscores
+%config(noreplace) %attr(664,root,games) %{_var}/games/bsd-fbg.scores
 %doc AUTHORS COPYING ChangeLog ChangeLog.0 THANKS YEAR2000 README.hunt trek/USD.doc/trek.me
 
 %changelog
+* Fri Aug 17 2007 Wart <wart@kobold.org> 2.17-21
+- License tag clarification
+- Minor rpmlint cleanup
+
 * Mon Apr 30 2007 Wart <wart@kobold.org> 2.17-20
 - Fix one more place where tetris must be renamed to bsd-fbg
 
@@ -267,7 +271,7 @@ rm -rf $RPM_BUILD_ROOT
 - kill countmail, no longer require frm from elm
 
 * Mon Jun 5 2000 Tim Powers <timp@redhat.com>
-- fixed man page location to be in %{_mandir}
+- fixed man page location to be in %%{_mandir}
 - fixed so that regular users can build
 
 * Fri May 5 2000 Tim Powers <timp@redhat.com>
@@ -283,9 +287,9 @@ rm -rf $RPM_BUILD_ROOT
 * Mon Nov 1 1999 Tim Powers <timp@redhat.com>
 - updated source to 2.8
 - fixed problem with ospeed being defined in the source instead of including
-	termcap.h (new ospeed patch)
-- using files list in %files section instead of entering
-	_every_single_filename_.
+  termcap.h (new ospeed patch)
+- using files list in %%files section instead of entering
+  _every_single_filename_.
 
 * Sat Aug 21 1999 Bill Nottingham <notting@redhat.com>
 - fix countmail (#3722). I must be bored.
