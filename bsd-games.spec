@@ -1,7 +1,7 @@
 Summary: Collection of text-based games
 Name: bsd-games
 Version: 2.17
-Release: 21%{?dist}
+Release: 22%{?dist}
 License: BSD and BSD with advertising
 Group: Amusements/Games
 URL: ftp://metalab.unc.edu/pub/Linux/games/
@@ -101,9 +101,9 @@ rm -f $RPM_BUILD_ROOT/%{_docdir}/trek.me
 rm -rf $RPM_BUILD_ROOT
 
 %pre
-%{_sbindir}/groupadd gamehack &>/dev/null || :
-%{_sbindir}/groupadd gamesail &>/dev/null || :
-%{_sbindir}/groupadd gamephant &>/dev/null || :
+%{_sbindir}/groupadd -r gamehack &>/dev/null || :
+%{_sbindir}/groupadd -r gamesail &>/dev/null || :
+%{_sbindir}/groupadd -r gamephant &>/dev/null || :
 
 %files
 %defattr(-,root,root)
@@ -171,6 +171,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS COPYING ChangeLog ChangeLog.0 THANKS YEAR2000 README.hunt trek/USD.doc/trek.me
 
 %changelog
+* Tue Nov 20 2007 Wart <wart@kobold.org> 2.17-22
+- Create setgid groups as system groups (BZ# 389191)
+
 * Fri Aug 17 2007 Wart <wart@kobold.org> 2.17-21
 - License tag clarification
 - Minor rpmlint cleanup
