@@ -1,7 +1,11 @@
+# Ick!  This is only a temporary hack until I have more time
+# to rebase the affected patches (#4, and possibly more)
+%define _default_patch_fuzz 2
+
 Summary: Collection of text-based games
 Name: bsd-games
 Version: 2.17
-Release: 23%{?dist}
+Release: 24%{?dist}
 License: BSD and BSD with advertising
 Group: Amusements/Games
 URL: ftp://metalab.unc.edu/pub/Linux/games/
@@ -173,6 +177,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS COPYING ChangeLog ChangeLog.0 THANKS YEAR2000 README.hunt trek/USD.doc/trek.me
 
 %changelog
+* Wed Oct 8 2008 Wart <wart@kobold.org> 2.17-24
+- Temporarily set patch fuzz factor until patches can be rebased.
+
 * Sat Feb 9 2008 Wart <wart@kobold.org> 2.17-23
 - Add patch and rebuild for gcc 4.3
 
