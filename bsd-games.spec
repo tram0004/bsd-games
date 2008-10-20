@@ -5,7 +5,7 @@
 Summary: Collection of text-based games
 Name: bsd-games
 Version: 2.17
-Release: 24%{?dist}
+Release: 25%{?dist}
 License: BSD and BSD with advertising
 Group: Amusements/Games
 URL: ftp://metalab.unc.edu/pub/Linux/games/
@@ -169,7 +169,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr(775,root,gamephant) %{_var}/games/phantasia
 %config(noreplace) %attr(664,root,gamephant) %{_var}/games/phantasia/*
 %dir %attr(775,root,gamesail) %{_var}/games/sail
-%config(noreplace) %attr(644,root,games) %{_var}/games/robots_roll
+%config(noreplace) %attr(664,root,games) %{_var}/games/robots_roll
 %config(noreplace) %attr(664,root,gamesail) %{_var}/games/saillog
 %config(noreplace) %attr(664,root,games) %{_var}/games/snake.log
 %config(noreplace) %attr(664,root,games) %{_var}/games/snakerawscores
@@ -177,6 +177,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS COPYING ChangeLog ChangeLog.0 THANKS YEAR2000 README.hunt trek/USD.doc/trek.me
 
 %changelog
+* Mon Oct 20 2008 Wart <wart@kobold.org> 2.17-25
+- Fix robots high score file permissions (BZ# 467726)
+
 * Wed Oct 8 2008 Wart <wart@kobold.org> 2.17-24
 - Temporarily set patch fuzz factor until patches can be rebased.
 
