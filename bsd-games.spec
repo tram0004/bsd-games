@@ -1,11 +1,10 @@
 # Ick!  This is only a temporary hack until I have more time
 # to rebase the affected patches (#4, and possibly more)
-%define _default_patch_fuzz 2
 
 Summary: Collection of text-based games
 Name: bsd-games
 Version: 2.17
-Release: 25%{?dist}
+Release: 26%{?dist}
 License: BSD and BSD with advertising
 Group: Amusements/Games
 URL: ftp://metalab.unc.edu/pub/Linux/games/
@@ -177,6 +176,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS COPYING ChangeLog ChangeLog.0 THANKS YEAR2000 README.hunt trek/USD.doc/trek.me
 
 %changelog
+* Mon Dec 22 2008 Wart <wart@kobold.org> 2.17-26
+- Minor tweaks to patches to get them to work with no fuzz
+
 * Mon Oct 20 2008 Wart <wart@kobold.org> 2.17-25
 - Fix robots high score file permissions (BZ# 467726)
 

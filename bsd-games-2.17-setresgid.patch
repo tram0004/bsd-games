@@ -76,7 +76,7 @@ diff -Naur --exclude '*.swp' bsd-games-2.17/backgammon/backgammon/main.c bsd-gam
  
 +#define _GNU_SOURCE /* this must be done before the first include of unistd.h */
  #include <sys/cdefs.h>
- #include <termcap.h>
+ #include <ncurses/termcap.h>
  #ifndef lint
 @@ -101,7 +102,10 @@
  	long    t;		/* time for random num generator */
@@ -99,7 +99,7 @@ diff -Naur --exclude '*.swp' bsd-games-2.17/backgammon/teachgammon/teach.c bsd-g
  
 +#define _GNU_SOURCE /* this must be done before the first include of unistd.h */
  #include <sys/cdefs.h>
- #include <termcap.h>
+ #include <ncurses/termcap.h>
  #ifndef lint
 @@ -68,7 +69,10 @@
  	int     i;
