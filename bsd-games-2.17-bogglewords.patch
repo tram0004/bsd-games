@@ -1,0 +1,17 @@
+--- boggle/boggle/bog.h.in.orig	2010-01-10 10:14:53.000000000 -0800
++++ boggle/boggle/bog.h.in	2010-01-10 10:15:14.000000000 -0800
+@@ -48,10 +48,10 @@
+  * The theoretical maximum for MAXWORDLEN is ('a' - 1) == 96
+  */
+ #define MAXWORDLEN		40	/* Maximum word length */
+-#define MAXPWORDS		200	/* Maximum number of player's words */
+-#define MAXMWORDS		200	/* Maximum number of machine's words */
+-#define MAXPSPACE		2000	/* Space for player's words */
+-#define MAXMSPACE		4000	/* Space for machines's words */
++#define MAXPWORDS		500	/* Maximum number of player's words */
++#define MAXMWORDS		500	/* Maximum number of machine's words */
++#define MAXPSPACE		20000	/* Space for player's words */
++#define MAXMSPACE		40000	/* Space for machines's words */
+ 
+ #define MAXCOLS			20
+ 

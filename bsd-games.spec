@@ -4,12 +4,15 @@
 Summary: Collection of text-based games
 Name: bsd-games
 Version: 2.17
-Release: 28%{?dist}
+Release: 29%{?dist}
 License: BSD and BSD with advertising
 Group: Amusements/Games
 URL: ftp://metalab.unc.edu/pub/Linux/games/
 Source0: ftp://metalab.unc.edu/pub/Linux/games/bsd-games-%{version}.tar.gz
 Source1: config.params
+# Updated acronym databases
+Source2: http://cvsweb.netbsd.org/cgi-bin/cvsweb.cgi/src/share/misc/acronyms
+Source3: http://cvsweb.netbsd.org/cgi-bin/cvsweb.cgi/src/share/misc/acronyms.comp
 # A collection of patches from Debian.
 Patch0: bsd-games-2.17-debian.patch
 # Patches from Fedora Core 1
@@ -28,6 +31,8 @@ Patch10: bsd-games-2.17-stdio-c++.patch
 Patch11: bsd-games-2.17-nolibtermcap.patch
 Patch12: bsd-games-2.17-tetris-rename.patch
 Patch13: bsd-games-2.17-gcc43.patch
+Patch14: bsd-games-2.17-bogglewords.patch
+Patch15: bsd-games-2.17-wtfupdate.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: ncurses-devel words flex bison
 Requires(Pre): /usr/sbin/groupadd
@@ -56,6 +61,8 @@ install -p -m 755 %{SOURCE1} .
 %patch11 -p0 -b .nolibtermcap
 %patch12 -p0 -b .tetris.rename
 %patch13 -p1 -b .gcc43
+%patch14 -p0 -b .wordlimit
+%patch15 -p0 -b .wtfupdate
 
 %build
 # We include a templatized configuration settings file to set
@@ -101,6 +108,10 @@ mv $RPM_BUILD_ROOT/%{_mandir}/man6/tetris-bsd.6.gz $RPM_BUILD_ROOT/%{_mandir}/ma
 
 # Remove this doc file.  We're copying it to a different location for Fedora.
 rm -f $RPM_BUILD_ROOT/%{_docdir}/trek.me
+
+# Updated acronym databases
+install -p -m 0644 %{SOURCE2} $RPM_BUILD_ROOT%{_datadir}/misc/
+install -p -m 0644 %{SOURCE3} $RPM_BUILD_ROOT%{_datadir}/misc/
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -176,6 +187,10 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS COPYING ChangeLog ChangeLog.0 THANKS YEAR2000 README.hunt trek/USD.doc/trek.me
 
 %changelog
+* Tue Oct 20 2009 Wart <wart@kobold.org> 2.17-29
+- Updated acronym databases (BZ #529921)
+- Allow more words in a boggle game (BZ #500187)
+
 * Fri Jul 24 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.17-28
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
 
