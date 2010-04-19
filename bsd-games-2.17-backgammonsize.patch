@@ -1,0 +1,22 @@
+--- backgammon/common_source/fancy.c.orig	2010-04-18 16:59:55.000000000 -0700
++++ backgammon/common_source/fancy.c	2010-04-18 17:27:47.000000000 -0700
+@@ -575,7 +575,7 @@
+ 	}
+ 	curr = curc = 0;	/* fix position markers */
+ 	realr = realc = -1;
+-	for (i = 0; i < 24; i++)/* clear line counts */
++	for (i = 0; i < LI; i++)/* clear line counts */
+ 		linect[i] = -1;
+ 	buffnum = -1;		/* ignore leftover buffer contents */
+ 	tputs(CL, CO, addbuf);	/* put CL in buffer */
+@@ -726,9 +726,9 @@
+ 		lUP = strlen(UP);
+ 	if (ND)
+ 		lND = strlen(ND);
++	linect = (int *) calloc(LI + 1, sizeof(int));
+ 	if (LI < 24 || CO < 72 || !(CL && UP && ND))
+ 		return (0);
+-	linect = (int *) calloc(LI + 1, sizeof(int));
+ 	if (linect == NULL) {
+ 		write(2, "\r\nOut of memory!\r\n", 18);
+ 		getout(0);

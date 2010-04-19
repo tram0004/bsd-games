@@ -4,7 +4,7 @@
 Summary: Collection of text-based games
 Name: bsd-games
 Version: 2.17
-Release: 29%{?dist}
+Release: 30%{?dist}
 License: BSD and BSD with advertising
 Group: Amusements/Games
 URL: ftp://metalab.unc.edu/pub/Linux/games/
@@ -33,6 +33,7 @@ Patch12: bsd-games-2.17-tetris-rename.patch
 Patch13: bsd-games-2.17-gcc43.patch
 Patch14: bsd-games-2.17-bogglewords.patch
 Patch15: bsd-games-2.17-wtfupdate.patch
+Patch16: bsd-games-2.17-backgammonsize.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: ncurses-devel words flex bison
 Requires(Pre): /usr/sbin/groupadd
@@ -63,6 +64,7 @@ install -p -m 755 %{SOURCE1} .
 %patch13 -p1 -b .gcc43
 %patch14 -p0 -b .wordlimit
 %patch15 -p0 -b .wtfupdate
+%patch16 -p0 -b .backgammonsize
 
 %build
 # We include a templatized configuration settings file to set
@@ -187,6 +189,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS COPYING ChangeLog ChangeLog.0 THANKS YEAR2000 README.hunt trek/USD.doc/trek.me
 
 %changelog
+* Sun Apr 18 2010 Wart <wart@kobold.org> 2.17-30
+- Add patch to fix core dump in backgammon when screen is < 24 lines tall
+
 * Tue Oct 20 2009 Wart <wart@kobold.org> 2.17-29
 - Updated acronym databases (BZ #529921)
 - Allow more words in a boggle game (BZ #500187)
