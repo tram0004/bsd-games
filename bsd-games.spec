@@ -4,7 +4,7 @@
 Summary: Collection of text-based games
 Name: bsd-games
 Version: 2.17
-Release: 30%{?dist}
+Release: 31%{?dist}
 License: BSD and BSD with advertising
 Group: Amusements/Games
 URL: ftp://metalab.unc.edu/pub/Linux/games/
@@ -35,7 +35,7 @@ Patch14: bsd-games-2.17-bogglewords.patch
 Patch15: bsd-games-2.17-wtfupdate.patch
 Patch16: bsd-games-2.17-backgammonsize.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires: ncurses-devel words flex bison
+BuildRequires: ncurses-devel words flex flex-static bison
 Requires(Pre): /usr/sbin/groupadd
 
 %description
@@ -189,6 +189,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS COPYING ChangeLog ChangeLog.0 THANKS YEAR2000 README.hunt trek/USD.doc/trek.me
 
 %changelog
+* Fri Dec 10 2010 Ralf Corsépius <corsepiu@fedoraproject.org> 2.17-31
+- Add BR: flex-static (Fix FTBFS: BZ 660856).
+
 * Sun Apr 18 2010 Wart <wart@kobold.org> 2.17-30
 - Add patch to fix core dump in backgammon when screen is < 24 lines tall
 
