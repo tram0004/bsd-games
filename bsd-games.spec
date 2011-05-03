@@ -4,7 +4,7 @@
 Summary: Collection of text-based games
 Name: bsd-games
 Version: 2.17
-Release: 33%{?dist}
+Release: 34%{?dist}
 License: BSD and BSD with advertising
 Group: Amusements/Games
 URL: ftp://metalab.unc.edu/pub/Linux/games/
@@ -36,7 +36,7 @@ Patch15: bsd-games-2.17-wtfupdate.patch
 Patch16: bsd-games-2.17-backgammonsize.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: ncurses-devel words flex flex-static bison
-Requires(Pre): /usr/sbin/groupadd
+Requires(pre): shadow-utils
 
 %description
 Bsd-games includes adventure, arithmetic, atc, backgammon, battlestar,
@@ -119,9 +119,10 @@ install -p -m 0644 %{SOURCE3} $RPM_BUILD_ROOT%{_datadir}/misc/
 rm -rf $RPM_BUILD_ROOT
 
 %pre
-%{_sbindir}/groupadd -r gamehack &>/dev/null || :
-%{_sbindir}/groupadd -r gamesail &>/dev/null || :
-%{_sbindir}/groupadd -r gamephant &>/dev/null || :
+for group in gamehack gamesail gamephant; do
+    getent group $group >/dev/null || groupadd -r $group
+done
+exit 0
 
 %files
 %defattr(-,root,root)
@@ -189,6 +190,10 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS COPYING ChangeLog ChangeLog.0 THANKS YEAR2000 README.hunt trek/USD.doc/trek.me
 
 %changelog
+* Tue May  3 2011 Ville Skyttä <ville.skytta@iki.fi> - 2.17-34
+- Fix Requires(pre) syntax for group creation.
+- Create groups as specified in packaging guidelines.
+
 * Tue May  3 2011 Ville Skyttä <ville.skytta@iki.fi> - 2.17-33
 - Update acronym databases, fix URLs to them (#529921).
 
