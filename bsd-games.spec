@@ -4,15 +4,15 @@
 Summary: Collection of text-based games
 Name: bsd-games
 Version: 2.17
-Release: 32%{?dist}
+Release: 33%{?dist}
 License: BSD and BSD with advertising
 Group: Amusements/Games
 URL: ftp://metalab.unc.edu/pub/Linux/games/
 Source0: ftp://metalab.unc.edu/pub/Linux/games/bsd-games-%{version}.tar.gz
 Source1: config.params
 # Updated acronym databases
-Source2: http://cvsweb.netbsd.org/cgi-bin/cvsweb.cgi/src/share/misc/acronyms
-Source3: http://cvsweb.netbsd.org/cgi-bin/cvsweb.cgi/src/share/misc/acronyms.comp
+Source2: http://cvsweb.netbsd.org/cgi-bin/cvsweb.cgi/~checkout~/src/share/misc/acronyms
+Source3: http://cvsweb.netbsd.org/cgi-bin/cvsweb.cgi/~checkout~/src/share/misc/acronyms.comp
 # A collection of patches from Debian.
 Patch0: bsd-games-2.17-debian.patch
 # Patches from Fedora Core 1
@@ -189,6 +189,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS COPYING ChangeLog ChangeLog.0 THANKS YEAR2000 README.hunt trek/USD.doc/trek.me
 
 %changelog
+* Tue May  3 2011 Ville Skyttä <ville.skytta@iki.fi> - 2.17-33
+- Update acronym databases, fix URLs to them (#529921).
+
 * Mon Feb 07 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org>
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
 
