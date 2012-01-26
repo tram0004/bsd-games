@@ -4,7 +4,7 @@
 Summary: Collection of text-based games
 Name: bsd-games
 Version: 2.17
-Release: 35%{?dist}
+Release: 36%{?dist}
 License: BSD and BSD with advertising
 Group: Amusements/Games
 URL: ftp://metalab.unc.edu/pub/Linux/games/
@@ -34,6 +34,7 @@ Patch13: bsd-games-2.17-gcc43.patch
 Patch14: bsd-games-2.17-bogglewords.patch
 Patch15: bsd-games-2.17-wtfupdate.patch
 Patch16: bsd-games-2.17-backgammonsize.patch
+Patch17: bsd-games-2.17-adventurecrc.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: ncurses-devel words flex flex-static bison
 Requires(pre): shadow-utils
@@ -65,6 +66,7 @@ install -p -m 755 %{SOURCE1} .
 %patch14 -p0 -b .wordlimit
 %patch15 -p0 -b .wtfupdate
 %patch16 -p0 -b .backgammonsize
+%patch17 -p0 -b .adventurecrc
 
 %build
 # We include a templatized configuration settings file to set
@@ -190,6 +192,10 @@ exit 0
 %doc AUTHORS COPYING ChangeLog ChangeLog.0 THANKS YEAR2000 README.hunt trek/USD.doc/trek.me
 
 %changelog
+* Thu Jan 26 2012 Jeff Makey <jeff@makey.net> - 2.17-36
+- Fix segmentation fault on 64-bit systems when saving adventure game.
+  (BZ #710936)
+
 * Thu Jan 12 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.17-35
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
 
