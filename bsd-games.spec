@@ -4,7 +4,7 @@
 Summary: Collection of text-based games
 Name: bsd-games
 Version: 2.17
-Release: 36%{?dist}
+Release: 37%{?dist}
 License: BSD and BSD with advertising
 Group: Amusements/Games
 URL: ftp://metalab.unc.edu/pub/Linux/games/
@@ -192,6 +192,9 @@ exit 0
 %doc AUTHORS COPYING ChangeLog ChangeLog.0 THANKS YEAR2000 README.hunt trek/USD.doc/trek.me
 
 %changelog
+* Wed Jul 18 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.17-37
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
+
 * Thu Jan 26 2012 Jeff Makey <jeff@makey.net> - 2.17-36
 - Fix segmentation fault on 64-bit systems when saving adventure game.
   (BZ #710936)
