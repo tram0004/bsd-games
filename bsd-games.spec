@@ -4,7 +4,7 @@
 Summary: Collection of text-based games
 Name: bsd-games
 Version: 2.17
-Release: 38%{?dist}
+Release: 39%{?dist}
 License: BSD and BSD with advertising
 Group: Amusements/Games
 URL: ftp://metalab.unc.edu/pub/Linux/games/
@@ -35,6 +35,7 @@ Patch14: bsd-games-2.17-bogglewords.patch
 Patch15: bsd-games-2.17-wtfupdate.patch
 Patch16: bsd-games-2.17-backgammonsize.patch
 Patch17: bsd-games-2.17-adventurecrc.patch
+Patch18: bsd-games-2.17-wtfrpm.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: ncurses-devel words flex flex-static bison
 Requires(pre): shadow-utils
@@ -67,6 +68,7 @@ install -p -m 755 %{SOURCE1} .
 %patch15 -p0 -b .wtfupdate
 %patch16 -p0 -b .backgammonsize
 %patch17 -p0 -b .adventurecrc
+%patch18 -p0 -b .wtfrpm
 
 %build
 # We include a templatized configuration settings file to set
@@ -192,6 +194,10 @@ exit 0
 %doc AUTHORS COPYING ChangeLog ChangeLog.0 THANKS YEAR2000 README.hunt trek/USD.doc/trek.me
 
 %changelog
+* Thu Apr 25 2013 Jan Pokorny <jpokorny@redhat.com> - 2.17-39
+- Make wtf fetch package info from rpm instead of pkg_info
+  (BZ #956648)
+
 * Wed Feb 13 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.17-38
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
 
