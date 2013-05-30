@@ -4,7 +4,7 @@
 Summary: Collection of text-based games
 Name: bsd-games
 Version: 2.17
-Release: 39%{?dist}
+Release: 40%{?dist}
 License: BSD and BSD with advertising
 Group: Amusements/Games
 URL: ftp://metalab.unc.edu/pub/Linux/games/
@@ -68,7 +68,7 @@ install -p -m 755 %{SOURCE1} .
 %patch15 -p0 -b .wtfupdate
 %patch16 -p0 -b .backgammonsize
 %patch17 -p0 -b .adventurecrc
-%patch18 -p0 -b .wtfrpm
+%patch18 -p1 -b .wtfrpm
 
 %build
 # We include a templatized configuration settings file to set
@@ -194,6 +194,9 @@ exit 0
 %doc AUTHORS COPYING ChangeLog ChangeLog.0 THANKS YEAR2000 README.hunt trek/USD.doc/trek.me
 
 %changelog
+* Thu May 30 2013 Jaromir Capik <jcapik@redhat.com> - 2.17-40
+- wtf: Removing duplicate prefix when rpm -q succeeds
+
 * Thu Apr 25 2013 Jan Pokorny <jpokorny@redhat.com> - 2.17-39
 - Make wtf fetch package info from rpm instead of pkg_info
   (BZ #956648)

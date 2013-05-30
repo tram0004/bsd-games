@@ -1,6 +1,7 @@
---- wtf/wtf.in.orig	2013-04-25 11:58:13.594320227 +0200
-+++ wtf/wtf.in	2013-04-25 13:02:15.392234252 +0200
-@@ -70,8 +70,8 @@
+diff -Naur bsd-games-2.17.orig/wtf/wtf.in bsd-games-2.17/wtf/wtf.in
+--- bsd-games-2.17.orig/wtf/wtf.in	2013-05-30 18:14:29.000000000 +0200
++++ bsd-games-2.17/wtf/wtf.in	2013-05-30 18:16:15.396266060 +0200
+@@ -70,10 +70,10 @@
  		shift ; continue
  	fi
  
@@ -9,5 +10,7 @@
 +	# Try rpm(8) next
 +	ans=`rpm -q --qf "%{name}: %{summary}\n" -- $1 2> /dev/null`
  	if [ $? -eq 0 ] ; then
- 		echo "$1: $ans"
+-		echo "$1: $ans"
++		echo "$ans"
  		shift ; continue
+ 	fi
