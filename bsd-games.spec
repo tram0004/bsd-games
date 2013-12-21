@@ -4,7 +4,7 @@
 Summary: Collection of text-based games
 Name: bsd-games
 Version: 2.17
-Release: 42%{?dist}
+Release: 43%{?dist}
 License: BSD and BSD with advertising
 Group: Amusements/Games
 URL: ftp://metalab.unc.edu/pub/Linux/games/
@@ -196,6 +196,9 @@ exit 0
 %doc AUTHORS COPYING ChangeLog ChangeLog.0 THANKS YEAR2000 README.hunt trek/USD.doc/trek.me
 
 %changelog
+* Sat Dec 21 2013 Jeff Makey <jeff@makey.net> - 2.17-43
+- Update acronym databases. (BZ #1032327)
+
 * Tue Aug 27 2013 Jeff Makey <jeff@makey.net> - 2.17-42
 - Fix segmentation fault in adventure initialization. (BZ #997933)
 
