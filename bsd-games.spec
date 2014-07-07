@@ -4,7 +4,7 @@
 Summary: Collection of text-based games
 Name: bsd-games
 Version: 2.17
-Release: 44%{?dist}
+Release: 45%{?dist}
 License: BSD and BSD with advertising
 Group: Amusements/Games
 URL: ftp://metalab.unc.edu/pub/Linux/games/
@@ -37,6 +37,7 @@ Patch16: bsd-games-2.17-backgammonsize.patch
 Patch17: bsd-games-2.17-adventurecrc.patch
 Patch18: bsd-games-2.17-wtfrpm.patch
 Patch19: bsd-games-2.17-adventureinit.patch
+Patch20: bsd-games-2.17-backgammonrecursion.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: ncurses-devel words flex flex-static bison
 Requires(pre): shadow-utils
@@ -71,6 +72,7 @@ install -p -m 755 %{SOURCE1} .
 %patch17 -p0 -b .adventurecrc
 %patch18 -p1 -b .wtfrpm
 %patch19 -p0 -b .adventureinit
+%patch20 -p1 -b .backgammonrecursion
 
 %build
 # We include a templatized configuration settings file to set
@@ -196,6 +198,10 @@ exit 0
 %doc AUTHORS COPYING ChangeLog ChangeLog.0 THANKS YEAR2000 README.hunt trek/USD.doc/trek.me
 
 %changelog
+* Mon Jul 07 2014 Jeff Makey <jeff@makey.net> - 2.17-45
+- Fix infinite recursion in backgammon. (BZ #1092874)
+- Fix bogus dates in changelog.
+
 * Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.17-44
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
 
@@ -326,7 +332,7 @@ exit 0
 - Remove bones file modifications from hack and run with a custom group
   instead.
 
-* Sun Apr 24 2006 Wart <wart@kobold.org> 2.17-5
+* Mon Apr 24 2006 Wart <wart@kobold.org> 2.17-5
 - Modified bones file handling to allow us to drop setgid earlier.
 
 * Sat Apr 22 2006 Wart <wart@kobold.org> 2.17-4
@@ -409,7 +415,7 @@ exit 0
 - only a fool would add a dependency to this package on a 
   day like today.
 
-* Fri Mar 18 1999 Michael Maher <mike@redhat.com>
+* Thu Mar 18 1999 Michael Maher <mike@redhat.com>
 - fixed bug 1550
 
 * Mon Feb 08 1999 Michael Maher <mike@redhat.com>

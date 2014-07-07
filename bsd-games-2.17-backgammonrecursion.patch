@@ -1,0 +1,16 @@
+--- bsd-games-2.17/backgammon/common_source/subs.c.orig	2003-12-16 18:47:37.000000000 -0800
++++ bsd-games-2.17/backgammon/common_source/subs.c	2014-07-07 08:44:22.776100529 -0700
+@@ -437,8 +437,11 @@
+ 	if (tflag)
+ 		newpos();
+ 	buflush();
+-	if (tcsetattr(0, TCSADRAIN, t) < 0)
+-		errexit("fixtty");
++	if (tcsetattr(0, TCSADRAIN, t) < 0) {
++		/* calling errexit("fixtty") leads to infinite recursion */
++		perror("\nfixtty");
++		exit(1);
++	}
+ }
+ 
+ void
