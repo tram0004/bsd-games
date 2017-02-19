@@ -4,7 +4,7 @@
 Summary: Collection of text-based games
 Name: bsd-games
 Version: 2.17
-Release: 50%{?dist}
+Release: 51%{?dist}
 License: BSD and BSD with advertising
 Group: Amusements/Games
 URL: ftp://metalab.unc.edu/pub/Linux/games/
@@ -13,6 +13,7 @@ Source1: config.params
 # Updated acronym databases
 Source2: http://cvsweb.netbsd.org/cgi-bin/cvsweb.cgi/~checkout~/src/share/misc/acronyms
 Source3: http://cvsweb.netbsd.org/cgi-bin/cvsweb.cgi/~checkout~/src/share/misc/acronyms.comp
+Source4: http://cvsweb.netbsd.org/cgi-bin/cvsweb.cgi/~checkout~/src/share/misc/acronyms-o.real
 # A collection of patches from Debian.
 Patch0: bsd-games-2.17-debian.patch
 # Patches from Fedora Core 1
@@ -122,6 +123,7 @@ rm -f $RPM_BUILD_ROOT/%{_docdir}/trek.me
 # Updated acronym databases
 install -p -m 0644 %{SOURCE2} $RPM_BUILD_ROOT%{_datadir}/misc/
 install -p -m 0644 %{SOURCE3} $RPM_BUILD_ROOT%{_datadir}/misc/
+install -p -m 0644 %{SOURCE4} $RPM_BUILD_ROOT%{_datadir}/misc/
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -178,6 +180,7 @@ exit 0
 %{_bindir}/wump
 %{_datadir}/%{name}
 %{_datadir}/misc/acronyms
+%{_datadir}/misc/acronyms-o.real
 %{_datadir}/misc/acronyms.comp
 %{_mandir}/man6/*
 %{_sbindir}/huntd
@@ -198,6 +201,9 @@ exit 0
 %doc AUTHORS COPYING ChangeLog ChangeLog.0 THANKS YEAR2000 README.hunt trek/USD.doc/trek.me
 
 %changelog
+* Sun Feb 19 2017 Jeff Makey <jeff@makey.net> - 2.17-51
+- Update wtf acronym databases. (BZ #1235427)
+
 * Fri Feb 10 2017 Fedora Release Engineering <releng@fedoraproject.org> - 2.17-50
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
 
