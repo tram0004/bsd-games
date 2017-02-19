@@ -1,0 +1,54 @@
+--- bsd-games-2.17/arithmetic/arithmetic.c.orig	2004-12-07 05:34:21.000000000 -0800
++++ bsd-games-2.17/arithmetic/arithmetic.c	2017-02-18 12:01:57.930993440 -0800
+@@ -84,7 +84,7 @@
+ #include <time.h>
+ #include <unistd.h>
+ 
+-int	getrandom(int, int, int);
++static int	get_random(int, int, int);
+ void	intr(int) __attribute__((__noreturn__));
+ int	main(int, char *[]);
+ int	opnum(int);
+@@ -203,25 +203,25 @@
+ 	right = left = result = 0;
+ 	op = keys[random() % nkeys];
+ 	if (op != '/')
+-		right = getrandom(rangemax + 1, op, 1);
++		right = get_random(rangemax + 1, op, 1);
+ retry:
+ 	/* Get the operands. */
+ 	switch (op) {
+ 	case '+':
+-		left = getrandom(rangemax + 1, op, 0);
++		left = get_random(rangemax + 1, op, 0);
+ 		result = left + right;
+ 		break;
+ 	case '-':
+-		result = getrandom(rangemax + 1, op, 0);
++		result = get_random(rangemax + 1, op, 0);
+ 		left = right + result;
+ 		break;
+ 	case 'x':
+-		left = getrandom(rangemax + 1, op, 0);
++		left = get_random(rangemax + 1, op, 0);
+ 		result = left * right;
+ 		break;
+ 	case '/':
+-		right = getrandom(rangemax, op, 1) + 1;
+-		result = getrandom(rangemax + 1, op, 0);
++		right = get_random(rangemax, op, 1) + 1;
++		result = get_random(rangemax + 1, op, 0);
+ 		left = right * result + random() % right;
+ 		break;
+ 	}
+@@ -326,8 +326,8 @@
+  * as a value, or represents a position in the penalty list.  If the latter,
+  * we find the corresponding value and return that, decreasing its penalty.
+  */
+-int
+-getrandom(maxval, op, operand)
++static int
++get_random(maxval, op, operand)
+ 	int maxval, op, operand;
+ {
+ 	int value;
