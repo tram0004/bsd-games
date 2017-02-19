@@ -39,6 +39,7 @@ Patch17: bsd-games-2.17-adventurecrc.patch
 Patch18: bsd-games-2.17-wtfrpm.patch
 Patch19: bsd-games-2.17-adventureinit.patch
 Patch20: bsd-games-2.17-backgammonrecursion.patch
+Patch21: bsd-games-2.17-huntversion.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: ncurses-devel words flex flex-static bison
 Requires(pre): shadow-utils
@@ -74,6 +75,7 @@ install -p -m 755 %{SOURCE1} .
 %patch18 -p1 -b .wtfrpm
 %patch19 -p0 -b .adventureinit
 %patch20 -p1 -b .backgammonrecursion
+%patch21 -p1 -b .huntversion
 
 %build
 # We include a templatized configuration settings file to set
@@ -203,6 +205,7 @@ exit 0
 %changelog
 * Sun Feb 19 2017 Jeff Makey <jeff@makey.net> - 2.17-51
 - Update wtf acronym databases. (BZ #1235427)
+- Fix hunt version mismatch. (BZ #1236218)
 
 * Fri Feb 10 2017 Fedora Release Engineering <releng@fedoraproject.org> - 2.17-50
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
