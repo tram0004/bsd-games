@@ -1,16 +1,16 @@
-diff -Naur bsd-games-2.17.orig/wtf/wtf.in bsd-games-2.17/wtf/wtf.in
---- bsd-games-2.17.orig/wtf/wtf.in	2013-05-30 18:14:29.000000000 +0200
-+++ bsd-games-2.17/wtf/wtf.in	2013-05-30 18:16:15.396266060 +0200
-@@ -70,10 +70,10 @@
- 		shift ; continue
+--- ./wtf.orig	2017-05-09 00:27:31.615525266 +0100
++++ ./wtf	2017-05-09 00:28:41.321297570 +0100
+@@ -87,10 +87,10 @@ for i; do
+ 		continue
  	fi
  
 -	# Try pkg_info(1) next
--	ans=`pkg_info -qc $1 2> /dev/null`
+-	ans="$(pkg_info -qc "$i" 2> /dev/null)"
 +	# Try rpm(8) next
 +	ans=`rpm -q --qf "%{name}: %{summary}\n" -- $1 2> /dev/null`
- 	if [ $? -eq 0 ] ; then
--		echo "$1: $ans"
+ 	if [ $? -eq 0 ]; then
+-		echo "$i: $ans"
 +		echo "$ans"
- 		shift ; continue
+ 		continue
  	fi
+ 
