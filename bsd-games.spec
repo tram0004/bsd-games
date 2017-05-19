@@ -1,12 +1,12 @@
 # Ick!  This is only a temporary hack until I have more time
 # to rebase the affected patches (#4, and possibly more)
 
-%global wtf_ver 20170505
+%global wtf_ver 20170512
 
 Summary: Collection of text-based games
 Name: bsd-games
 Version: 2.17
-Release: 52%{?dist}
+Release: 53%{?dist}
 License: BSD and BSD with advertising
 Group: Amusements/Games
 URL: ftp://metalab.unc.edu/pub/Linux/games/
@@ -211,6 +211,9 @@ exit 0
 %doc AUTHORS COPYING ChangeLog ChangeLog.0 THANKS YEAR2000 README.hunt trek/USD.doc/trek.me
 
 %changelog
+* Fri May 19 2017 Sérgio Basto <sergio@serjux.com> - 2.17-53
+- Update wtf to 20170512
+
 * Thu May 18 2017 Sérgio Basto <sergio@serjux.com> - 2.17-52
 - Update bsd-wtf to 20170505 version, including new wtf script for wtf without
   offensive words (if that make sense).
