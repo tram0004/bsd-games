@@ -214,7 +214,7 @@ exit 0
 * Thu May 18 2017 Sérgio Basto <sergio@serjux.com> - 2.17-52
 - Update bsd-wtf to 20170505 version, including new wtf script for wtf without
   offensive words (if that make sense).
-- Use printf() format string in battlestar to satisfy -Werror=format-security.
+- Use printf() format string where needed to satisfy -Werror=format-security.
 
 * Sun Feb 19 2017 Jeff Makey <jeff@makey.net> - 2.17-51
 - Update wtf acronym databases. (BZ #1235427)
