@@ -1,0 +1,11 @@
+--- bsd-games-2.17/battlestar/room.c.orig	2003-12-16 18:47:37.000000000 -0800
++++ bsd-games-2.17/battlestar/room.c	2017-05-18 18:07:39.212393764 -0700
+@@ -58,7 +58,7 @@
+ 					putchar(c);
+ 			} else {
+ 				if (c != '*')
+-					printf(truedirec(compass, c));
++					printf("%s", truedirec(compass, c));
+ 				compass++;
+ 			}
+ 	}

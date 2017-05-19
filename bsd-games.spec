@@ -40,6 +40,7 @@ Patch19: bsd-games-2.17-adventureinit.patch
 Patch20: bsd-games-2.17-backgammonrecursion.patch
 Patch21: bsd-games-2.17-huntversion.patch
 Patch22: bsd-games-2.17-getrandom.patch
+Patch23: bsd-games-2.17-printf.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: ncurses-devel words flex flex-static bison
 Requires(pre): shadow-utils
@@ -78,6 +79,7 @@ popd
 %patch20 -p1 -b .backgammonrecursion
 %patch21 -p1 -b .huntversion
 %patch22 -p1 -b .getrandom
+%patch23 -p1 -b .printf
 
 %build
 # We include a templatized configuration settings file to set
@@ -209,9 +211,10 @@ exit 0
 %doc AUTHORS COPYING ChangeLog ChangeLog.0 THANKS YEAR2000 README.hunt trek/USD.doc/trek.me
 
 %changelog
-* Mon May 08 2017 Sérgio Basto <sergio@serjux.com> - 2.17-52
+* Thu May 18 2017 Sérgio Basto <sergio@serjux.com> - 2.17-52
 - Update bsd-wtf to 20170505 version, including new wtf script for wtf without
   offensive words (if that make sense).
+- Use printf() format string in battlestar to satisfy -Werror=format-security.
 
 * Sun Feb 19 2017 Jeff Makey <jeff@makey.net> - 2.17-51
 - Update wtf acronym databases. (BZ #1235427)
