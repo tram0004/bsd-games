@@ -183,3 +183,34 @@
  	if (i == 5)
  		Fast = 0;
  	if (i == 3)
+--- bsd-games-2.17/hunt/hunt/hunt.c.orig	2017-05-18 21:38:16.488366136 -0700
++++ bsd-games-2.17/hunt/hunt/hunt.c	2017-05-18 21:52:37.700549544 -0700
+@@ -914,7 +914,7 @@
+ 	int serrno = errno;
+ 	fincurs();
+ 	errno = serrno;
+-	err(eval, mesg ? mesg : "");
++	err(eval, "%s", mesg ? mesg : "");
+ }
+ 
+ /*
+@@ -928,7 +928,7 @@
+ 	const char	*mesg;
+ {
+ 	fincurs();
+-	errx(eval, mesg ? mesg : "");
++	errx(eval, "%s", mesg ? mesg : "");
+ }
+ 
+ #if !defined(USE_CURSES) && defined(SIGTSTP)
+--- bsd-games-2.17/monop/misc.c.orig	2004-12-07 05:34:21.000000000 -0800
++++ bsd-games-2.17/monop/misc.c	2017-05-18 21:53:32.207072459 -0700
+@@ -101,7 +101,7 @@
+ 
+ 	for (;;) {
+ inter:
+-		printf(prompt);
++		printf("%s", prompt);
+ 		num = 0;
+ 		for (sp = buf; (c=getchar()) != '\n'; *sp++ = c)
+ 			if (c == -1)	/* check for interrupted system call */
