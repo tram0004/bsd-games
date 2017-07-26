@@ -6,7 +6,7 @@
 Summary: Collection of text-based games
 Name: bsd-games
 Version: 2.17
-Release: 53%{?dist}
+Release: 54%{?dist}
 License: BSD and BSD with advertising
 Group: Amusements/Games
 URL: ftp://metalab.unc.edu/pub/Linux/games/
@@ -211,6 +211,9 @@ exit 0
 %doc AUTHORS COPYING ChangeLog ChangeLog.0 THANKS YEAR2000 README.hunt trek/USD.doc/trek.me
 
 %changelog
+* Wed Jul 26 2017 Fedora Release Engineering <releng@fedoraproject.org> - 2.17-54
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
+
 * Fri May 19 2017 Sérgio Basto <sergio@serjux.com> - 2.17-53
 - Update wtf to 20170512
 
